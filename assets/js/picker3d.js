@@ -55,6 +55,15 @@
     return a ? { x: x / (6 * a), z: y / (6 * a), area: Math.abs(a) } : { x: poly[0][0], z: poly[0][1], area: 0 };
   }
 
+  // canvas → текстура; поверх подгружается та же картинка файлом (браузеры с защитой от отпечатков портят canvas)
+  function fileTex(c, name) {
+    var t = new T.CanvasTexture(c);
+    (window.__texReg = window.__texReg || {})[name] = c;
+    var im = new Image();
+    im.onload = function () { t.image = im; t.needsUpdate = true; if (window.ALTA_pickerRender) window.ALTA_pickerRender(); };
+    im.src = 'assets/tex/' + name + '.png';
+    return t;
+  }
   /* фасад: 4 оси по 3,2 м на один этаж — светлые панели, панорамное остекление, часть окон светится */
   function facadeTex(seed, ground) {
     var c = document.createElement('canvas'); c.width = 1024; c.height = 256;
@@ -85,7 +94,7 @@
       if (lit) { y.fillStyle = rnd() < 0.5 ? '#ffcd85' : '#ffe0ad'; y.fillRect(wx + 4, wy + 4, ww - 8, wh - 8); }
     }
     x.fillStyle = '#d9d1bf'; x.fillRect(0, 244, 1024, 12);                                     // межэтажный пояс
-    var t1 = new T.CanvasTexture(c), t2 = new T.CanvasTexture(e);
+    var t1 = fileTex(c, 'pk-a-' + seed), t2 = fileTex(e, 'pk-e-' + seed);
     [t1, t2].forEach(function (t) { t.wrapS = t.wrapT = T.RepeatWrapping; t.repeat.set(1 / 12.8, 1 / (FH - 0.2)); t.anisotropy = 8; });
     if ('colorSpace' in t1) t1.colorSpace = T.SRGBColorSpace;
     return [t1, t2];
@@ -181,7 +190,7 @@
     var gx = gc.getContext('2d'), grd = gx.createRadialGradient(256, 256, 20, 256, 256, 256);
     grd.addColorStop(0, 'rgba(24,52,34,.95)'); grd.addColorStop(0.5, 'rgba(12,33,20,.7)'); grd.addColorStop(1, 'rgba(6,23,13,0)');
     gx.fillStyle = grd; gx.fillRect(0, 0, 512, 512);
-    var gt = new T.CanvasTexture(gc);
+    var gt = fileTex(gc, 'pk-ground');
     if ('colorSpace' in gt) gt.colorSpace = T.SRGBColorSpace;
     var ground = new T.Mesh(new T.CircleGeometry(160, 64), new T.MeshBasicMaterial({ map: gt, transparent: true, depthWrite: false }));
     ground.rotation.x = -Math.PI / 2; ground.position.y = -0.4; scene.add(ground);

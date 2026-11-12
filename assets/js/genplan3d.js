@@ -97,6 +97,15 @@
   };
   gImg.src = window.ALTA_GROUND;
 
+  // canvas → текстура; поверх подгружается та же картинка файлом (браузеры с защитой от отпечатков портят canvas)
+  function fileTex(c, name) {
+    var t = new T.CanvasTexture(c);
+    (window.__texReg = window.__texReg || {})[name] = c;
+    var im = new Image();
+    im.onload = function () { t.image = im; t.needsUpdate = true; if (window.ALTA_pickerRender) window.ALTA_pickerRender(); };
+    im.src = 'assets/tex/' + name + '.png';
+    return t;
+  }
   /* фасадная текстура: 4 оси × 16 этажей */
   function facade(seed, emissive) {
     var c = document.createElement('canvas'); c.width = 128; c.height = 512;
@@ -118,7 +127,7 @@
         else { x.fillStyle = lit ? '#f7d596' : '#22382f'; x.fillRect(bx + 8, y + 7, 17, 19); x.fillStyle = 'rgba(0,0,0,.12)'; x.fillRect(bx, y + 31, 32, 1); }
       }
     }
-    var t = new T.CanvasTexture(c);
+    var t = fileTex(c, 'gp-' + (emissive ? 'e' : 'a') + '-' + seed);
     t.wrapS = T.RepeatWrapping; t.anisotropy = 4;
     if (!emissive && 'colorSpace' in t) t.colorSpace = T.SRGBColorSpace;
     return t;

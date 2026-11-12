@@ -10,107 +10,48 @@
   var pos = { x: 0, z: 0 }, yaw = 0, pitch = -0.05, keys = {}, mv = { x: 0, y: 0 }, target = null, furnOn = true, lastRoom = '';
   var phone = function () { return innerWidth < 860 || matchMedia('(pointer: coarse)').matches; };
 
-  /* ───────── текстуры ───────── */
-  function canvasTex(w, h, draw, rep) {
-    var c = document.createElement('canvas'); c.width = w; c.height = h;
-    draw(c.getContext('2d'), w, h);
-    var t = new T.CanvasTexture(c);
-    t.wrapS = t.wrapT = T.RepeatWrapping;
-    if (rep) t.repeat.set(rep[0], rep[1]);
-    t.anisotropy = 8;
-    if ('colorSpace' in t) t.colorSpace = T.SRGBColorSpace;
-    return t;
-  }
   var seed = 7; function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
-  function parquet() {                 // ёлочка из дуба, 1 текстура = 1,2 м
-    return canvasTex(512, 512, function (x, w) {
-      x.fillStyle = '#b89a78'; x.fillRect(0, 0, w, w);
-      var pw = 32, pl = 128;
-      for (var row = -2; row < 10; row++) for (var col = -2; col < 10; col++) {
-        var ox = col * pw * 2, oy = row * pl / 2 + col * pw;
-        for (var s = 0; s < 2; s++) {
-          var t0 = rnd(), l = 168 + t0 * 32, g = 138 + t0 * 26, b = 104 + t0 * 20;
-          x.save(); x.translate(ox + (s ? pw : 0), oy + (s ? pw : 0)); x.rotate(s ? -Math.PI / 4 : Math.PI / 4);
-          x.fillStyle = 'rgb(' + (l | 0) + ',' + (g | 0) + ',' + (b | 0) + ')'; x.fillRect(0, 0, pl, pw);
-          x.strokeStyle = 'rgba(70,45,20,.35)'; x.lineWidth = 1.2; x.strokeRect(0, 0, pl, pw);
-          for (var k = 0; k < 5; k++) { x.strokeStyle = 'rgba(90,60,30,' + (0.06 + rnd() * 0.08) + ')'; x.beginPath(); x.moveTo(0, rnd() * pw); x.lineTo(pl, rnd() * pw); x.stroke(); }
-          x.restore();
-        }
-      }
-    });
-  }
-  function tiles(base, grout, size) {
-    return canvasTex(512, 512, function (x, w) {
-      var n = size;
-      for (var i = 0; i < n; i++) for (var j = 0; j < n; j++) {
-        var v = (rnd() - 0.5) * 10;
-        x.fillStyle = 'rgb(' + (base[0] + v | 0) + ',' + (base[1] + v | 0) + ',' + (base[2] + v | 0) + ')';
-        x.fillRect(j * w / n, i * w / n, w / n, w / n);
-        for (var k = 0; k < 4; k++) { x.fillStyle = 'rgba(255,255,255,' + rnd() * 0.06 + ')'; x.beginPath(); x.ellipse(j * w / n + rnd() * w / n, i * w / n + rnd() * w / n, rnd() * 30 + 6, rnd() * 4 + 1, rnd() * 3, 0, 7); x.fill(); }
-      }
-      x.strokeStyle = grout; x.lineWidth = 3;
-      for (var q = 0; q <= n; q++) { x.beginPath(); x.moveTo(q * w / n, 0); x.lineTo(q * w / n, w); x.stroke(); x.beginPath(); x.moveTo(0, q * w / n); x.lineTo(w, q * w / n); x.stroke(); }
-    });
-  }
-  function fabric(col, weave) {
-    return canvasTex(128, 128, function (x, w) {
-      x.fillStyle = col; x.fillRect(0, 0, w, w);
-      for (var i = 0; i < 1600; i++) { x.fillStyle = 'rgba(' + (rnd() < 0.5 ? '255,255,255' : '0,0,0') + ',' + (weave * rnd()) + ')'; x.fillRect(rnd() * w, rnd() * w, 2, 2); }
-    }, [3, 3]);
-  }
-  function rugTex() {
-    return canvasTex(512, 512, function (x, w) {
-      x.fillStyle = '#d8ccb6'; x.fillRect(0, 0, w, w);
-      x.strokeStyle = '#a8946f'; x.lineWidth = 10; x.strokeRect(26, 26, w - 52, w - 52);
-      x.strokeStyle = 'rgba(15,74,43,.55)'; x.lineWidth = 4; x.strokeRect(48, 48, w - 96, w - 96);
-      for (var i = 0; i < 9000; i++) { x.fillStyle = 'rgba(80,60,30,' + rnd() * 0.08 + ')'; x.fillRect(rnd() * w, rnd() * w, 2, 2); }
-    });
-  }
-  function skyTex() {                    // мягкая панорама: небо, дымка, далёкий город — без мультяшности
-    return canvasTex(2048, 512, function (x, w, h) {
-      var hz = h * 0.6;
-      var g = x.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, '#8fb0cb'); g.addColorStop(0.42, '#c3d4df'); g.addColorStop(0.58, '#eef0ec'); g.addColorStop(0.6, '#e6e6dd'); g.addColorStop(1, '#9aa08a');
-      x.fillStyle = g; x.fillRect(0, 0, w, h);
-      if ('filter' in x) x.filter = 'blur(10px)';
-      for (var i = 0; i < 26; i++) {
-        x.fillStyle = 'rgba(255,255,255,' + (0.18 + rnd() * 0.22) + ')';
-        var cx = rnd() * w, cy = 40 + rnd() * (hz - 120);
-        for (var k = 0; k < 7; k++) { x.beginPath(); x.ellipse(cx + (rnd() - 0.5) * 160, cy + (rnd() - 0.5) * 16, 50 + rnd() * 90, 8 + rnd() * 10, 0, 0, 7); x.fill(); }
-      }
-      if ('filter' in x) x.filter = 'blur(1.5px)';
-      for (var j = 0; j < 160; j++) {                           // далёкие дома в дымке
-        var bx = rnd() * w, bwid = 8 + rnd() * 26, bhgt = 6 + rnd() * (rnd() < 0.15 ? 40 : 16);
-        x.fillStyle = 'rgba(' + (150 + rnd() * 30 | 0) + ',' + (160 + rnd() * 25 | 0) + ',' + (165 + rnd() * 25 | 0) + ',.55)';
-        x.fillRect(bx, hz - bhgt, bwid, bhgt + 2);
-      }
-      for (var t = 0; t < w; t += 3) {                           // кромка деревьев
-        x.fillStyle = 'rgba(110,125,95,.55)'; x.fillRect(t, hz - 4 - Math.abs(Math.sin(t * 0.07) * 6 + Math.sin(t * 0.013) * 4), 4, 30);
-      }
-      if ('filter' in x) x.filter = 'none';
-      var gg = x.createLinearGradient(0, hz, 0, h); gg.addColorStop(0, 'rgba(236,236,226,.65)'); gg.addColorStop(0.25, 'rgba(236,236,226,0)');
-      x.fillStyle = gg; x.fillRect(0, hz, w, h - hz);
-    });
-  }
 
   /* ───────── материалы ───────── */
   var M = {};
+  // текстуры — готовыми картинками: в части браузеров (Яндекс, Brave и др.) защита от отпечатков
+  // портит рисование на canvas, и квартира становится чёрной
+  var texWait = [];
+  function img(name, rep, color) {
+    var t = new T.Texture();
+    t.wrapS = t.wrapT = T.RepeatWrapping; t.anisotropy = 8;
+    if (rep) t.repeat.set(rep[0], rep[1]);
+    if (color !== false && 'colorSpace' in t) t.colorSpace = T.SRGBColorSpace;
+    texWait.push(new Promise(function (res) {
+      var im = new Image();
+      im.onload = function () { t.image = im; t.needsUpdate = true; res(); };
+      im.onerror = function () { res(); };
+      im.src = 'assets/tex/' + name;
+    }));
+    return t;
+  }
+  function data(w, h, fill) {                               // текстура из массива (без canvas)
+    var a = new Uint8Array(w * h * 4);
+    for (var i = 0; i < h; i++) for (var j = 0; j < w; j++) { var v = fill(i, j), k = (i * w + j) * 4; a[k] = a[k + 1] = a[k + 2] = v; a[k + 3] = 255; }
+    var t = new T.DataTexture(a, w, h, T.RGBAFormat); t.magFilter = t.minFilter = T.LinearFilter; t.needsUpdate = true;
+    return t;
+  }
   function mats() {
     var S = function (o) { return new T.MeshStandardMaterial(o); };
     M.wall = S({ color: 0xe9e3d8, roughness: 0.95 });
     M.ceil = S({ color: 0xf7f5f0, roughness: 1, side: T.DoubleSide, emissive: 0x77726a });
-    var pq = parquet(); M.parquet = S({ map: pq, roughness: 0.62 });
-    var tl = tiles([226, 214, 194], 'rgba(150,135,110,.7)', 4); M.tile = S({ map: tl, roughness: 0.35 });
-    var tg = tiles([212, 206, 196], 'rgba(120,110,95,.6)', 6); M.tileg = S({ map: tg, roughness: 0.5 });
+    var pq = img('parquet.jpg'); M.parquet = S({ map: pq, roughness: 0.62 });
+    var tl = img('tile.jpg'); M.tile = S({ map: tl, roughness: 0.35 });
+    var tg = img('tileg.jpg'); M.tileg = S({ map: tg, roughness: 0.5 });
     M.glass = new T.MeshPhysicalMaterial({ color: 0xdfeef3, transparent: true, opacity: 0.16, roughness: 0.05, metalness: 0.1, side: T.DoubleSide, depthWrite: false });
     M.frame = S({ color: 0x5a4a35, roughness: 0.5, metalness: 0.35 });
     M.sill = S({ color: 0xe8e1d2, roughness: 0.4 });
     M.oak = S({ color: 0xb59c7c, roughness: 0.6 });
     M.oakd = S({ color: 0x5f4a38, roughness: 0.55 });
     M.ivory = S({ color: 0xeee6d6, roughness: 0.85 });
-    M.boucle = S({ map: fabric('#e6dccb', 0.18), roughness: 1 });
-    M.velvet = S({ map: fabric('#1f5236', 0.12), roughness: 0.8 });
-    M.linen = S({ map: fabric('#f4efe6', 0.1), roughness: 1 });
+    M.boucle = S({ map: img('boucle.png', [3, 3]), roughness: 1 });
+    M.velvet = S({ map: img('velvet.png', [3, 3]), roughness: 0.8 });
+    M.linen = S({ map: img('linen.png', [3, 3]), roughness: 1 });
     M.trav = S({ color: 0xd8cbb2, roughness: 0.45 });
     M.brass = S({ color: 0xc9a96a, roughness: 0.3, metalness: 0.9 });
     M.white = S({ color: 0xf6f4f0, roughness: 0.25 });
@@ -118,7 +59,7 @@
     M.steel = S({ color: 0xc7cbcf, roughness: 0.35, metalness: 0.7 });
     M.stone = S({ color: 0xd9d1c4, roughness: 0.3 });
     M.leaf = S({ color: 0x2f5a35, roughness: 0.8 });
-    M.rug = S({ map: rugTex(), roughness: 1 });
+    M.rug = S({ map: img('rug.jpg'), roughness: 1 });
     M.book = [0x6d2f2f, 0x1f4a3a, 0xc9a96a, 0x2c3e55, 0xd8cbb2].map(function (c) { return S({ color: c, roughness: 0.8 }); });
     M.door = S({ color: 0x4a3a2c, roughness: 0.5 });
     M.water = S({ color: 0xbfd6dc, roughness: 0.1, metalness: 0.1 });
@@ -129,35 +70,20 @@
     M.doorglass = new T.MeshPhysicalMaterial({ color: 0xd8e6ea, transparent: true, opacity: 0.09, roughness: 0.15, metalness: 0, side: T.DoubleSide, depthWrite: false });
     M.doorleaf = S({ color: 0xefeae1, roughness: 0.5 });
     M.whitem = S({ color: 0xf0ece4, roughness: 0.7 });
-    M.curtain = S({ map: drape(), roughness: 1, color: 0xf2ebdf });
+    M.curtain = S({ map: img('curtain.png'), roughness: 1, color: 0xf2ebdf });
     M.lamp = new T.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff1dc, emissiveIntensity: 1.6, roughness: 0.4 });
-    M.wallAO = canvasTex(4, 256, function (x, w, h) {            // v=0 — пол, v=1 — потолок (flipY)
-      var g = x.createLinearGradient(0, 0, 0, h);
-      g.addColorStop(0, 'rgb(205,205,205)'); g.addColorStop(0.06, 'rgb(250,250,250)'); g.addColorStop(0.88, '#fff'); g.addColorStop(0.96, 'rgb(235,235,235)'); g.addColorStop(1, 'rgb(190,190,190)');
-      x.fillStyle = g; x.fillRect(0, 0, w, h);
+    M.wallAO = data(1, 256, function (i) {                  // строка 0 — пол, 255 — потолок
+      var v = i / 255, k = v < 0.06 ? 205 + (250 - 205) * v / 0.06 : v < 0.88 ? 250 + 5 * (v - 0.06) / 0.82 : v < 0.96 ? 255 - 20 * (v - 0.88) / 0.08 : 235 - 45 * (v - 0.96) / 0.04;
+      return Math.round(k);
     });
-    M.wallAO.channel = 1; if ('colorSpace' in M.wallAO) M.wallAO.colorSpace = T.NoColorSpace;
-    var tw = canvasTex(512, 512, function (x, w) {             // плитка 30×60 в ванной, вертикально
-      for (var i = 0; i < 2; i++) for (var j = 0; j < 4; j++) {
-        var v = (rnd() - 0.5) * 6; x.fillStyle = 'rgb(' + (233 + v | 0) + ',' + (229 + v | 0) + ',' + (221 + v | 0) + ')';
-        x.fillRect(j * w / 4, i * w / 2, w / 4, w / 2);
-        for (var k = 0; k < 5; k++) { x.strokeStyle = 'rgba(160,150,135,' + rnd() * 0.05 + ')'; x.lineWidth = 1 + rnd() * 2; x.beginPath(); x.moveTo(j * w / 4 + rnd() * w / 4, i * w / 2); x.bezierCurveTo(j * w / 4 + rnd() * w / 4, i * w / 2 + w / 6, j * w / 4 + rnd() * w / 4, i * w / 2 + w / 3, j * w / 4 + rnd() * w / 4, (i + 1) * w / 2); x.stroke(); }
-      }
-      x.strokeStyle = 'rgba(175,165,150,.9)'; x.lineWidth = 2;
-      for (var q = 0; q <= 4; q++) { x.beginPath(); x.moveTo(q * w / 4, 0); x.lineTo(q * w / 4, w); x.stroke(); }
-      for (var e = 0; e <= 2; e++) { x.beginPath(); x.moveTo(0, e * w / 2); x.lineTo(w, e * w / 2); x.stroke(); }
-    });
-    tw.repeat.set(1 / 1.2, 1 / 1.2);
+    M.wallAO.channel = 1;
+    var tw = img('tilewall.jpg', [1 / 1.2, 1 / 1.2]);
     M.tilewall = S({ map: tw, roughness: 0.22, aoMap: M.wallAO });
-    M.sky = new T.MeshBasicMaterial({ map: skyTex(), side: T.BackSide, fog: false });
+    M.sky = new T.MeshBasicMaterial({ map: img('sky.jpg'), side: T.BackSide, fog: false });
     M.ground = S({ color: 0x7c8668, roughness: 1 });
     for (var k in M) if (M[k] && M[k].isMeshStandardMaterial) M[k].envMapIntensity = { glass: 1, white: 0.9, brass: 1, steel: 1, black: 0.8 }[k] || 0.6;
   }
-  function drape() {                                        // складки штор
-    return canvasTex(256, 16, function (x, w, h) {
-      for (var i = 0; i < w; i++) { var v = 200 + 55 * (0.5 + 0.5 * Math.sin(i / w * Math.PI * 2 * 7)) * (0.85 + 0.15 * Math.sin(i * 0.9)); x.fillStyle = 'rgb(' + (v | 0) + ',' + (v | 0) + ',' + (v | 0) + ')'; x.fillRect(i, 0, 1, h); }
-    });
-  }
+
   var BOX, LAMP, SKYGEO, GROUNDGEO, LEAF;
   function box(w, h, d, m, x, y, z, g) {
     var me = new T.Mesh(BOX, m); me.scale.set(w, h, d); me.position.set(x || 0, (y || 0) + h / 2, z || 0); (g || this).add(me); return me;
@@ -364,11 +290,8 @@
     }
     var o1 = new Float32Array(w * h), o2 = new Float32Array(w * h);
     blur(occ, o1, 3); blur(o1, o2, 3); blur(o2, o1, 2);
-    var c = document.createElement('canvas'); c.width = w; c.height = h;
-    var x = c.getContext('2d'), id = x.createImageData(w, h);
-    for (var k = 0; k < w * h; k++) { var v = Math.round(255 * (1 - 0.62 * Math.min(1, o1[k] * 1.25))); id.data[k * 4] = id.data[k * 4 + 1] = id.data[k * 4 + 2] = v; id.data[k * 4 + 3] = 255; }
-    x.putImageData(id, 0, 0);
-    var t = new T.CanvasTexture(c); t.flipY = false; t.channel = 1;
+    var t = data(w, h, function (i, j) { return Math.round(255 * (1 - 0.62 * Math.min(1, o1[i * w + j] * 1.25))); });
+    t.channel = 1;
     return t;
   }
 
@@ -985,8 +908,11 @@
               }, 260);
             });
           };
-          if (renderer.compileAsync) renderer.compileAsync(scene, camera).then(done, done);
-          else { renderer.compile(scene, camera); done(); }
+          Promise.all(texWait).then(function () {
+            if (my !== token) return;
+            if (renderer.compileAsync) renderer.compileAsync(scene, camera).then(done, done);
+            else { renderer.compile(scene, camera); done(); }
+          });
         });
       });
     });
