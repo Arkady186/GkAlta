@@ -326,6 +326,7 @@
     lastFocus = document.activeElement;
     root.classList.add('is-open'); root.inert = false; root.setAttribute('aria-hidden', 'false');
     document.body.classList.add('cat-open');
+    var nav = document.getElementById('nav'); if (nav && nav.classList.contains('is-open')) { nav.classList.remove('is-open'); var bg = document.getElementById('burger'); if (bg) bg.setAttribute('aria-expanded', 'false'); }
     if (opts.type) { var t = TYPES[opts.type]; S.sub = t.rooms >= 2 ? (t.euro ? 'euro' : 'classic') : 'any'; setTab(String(t.rooms)); }
     else if (opts.tab != null) setTab(String(opts.tab));
     else if (!current.length) apply();
@@ -335,8 +336,8 @@
   function close() {
     closeFlat(true);
     sheetOpen(false);
-    root.classList.remove('is-open'); root.inert = true; root.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('cat-open');
+    root.classList.remove('is-open', 'is-solo'); root.inert = true; root.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('cat-open'); solo = false;
     setHash('');
     if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
   }
@@ -346,7 +347,7 @@
   }
 
   /* ───────── окно квартиры ───────── */
-  var fl = null;
+  var fl = null, solo = false;
   function rowsHTML(list) { return '<dl class="fl-rows">' + list.filter(Boolean).map(function (r) { return '<div><dt>' + r[0] + '</dt><dd>' + r[1] + '</dd></div>'; }).join('') + '</dl>'; }
   function openFlat(id, silent) {
     var f = BY_ID[id]; if (!f) return;
@@ -384,6 +385,7 @@
     if (!modal.classList.contains('is-open')) return;
     modal.classList.remove('is-open'); modal.inert = true; modal.setAttribute('aria-hidden', 'true');
     document.title = baseTitle;
+    if (solo && !quiet) { close(); return; }
     if (!quiet) setHash('#kvartiry-vse');
     var c = fl && $('[data-flat="' + fl.id + '"] .cat-card-hit', listEl); if (c && !quiet) c.focus({ preventScroll: true });
   }
@@ -447,6 +449,10 @@
   fromHash(window.ALTA_hash0 || location.hash);
 
   window.ALTA_openCatalog = open;
-  window.ALTA_openFlat = function (id) { open({ silent: true }); openFlat(id); };
+  // solo — только окно квартиры поверх того, откуда его открыли (выбор по этажам, 3D-выбор); закрытие возвращает туда же
+  window.ALTA_openFlat = function (id, o) {
+    if (o && o.solo && !root.classList.contains('is-open')) { solo = true; root.classList.add('is-solo'); }
+    open({ silent: true }); openFlat(id);
+  };
   window.ALTA_planSVG = planSVG;
 })();

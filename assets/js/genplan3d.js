@@ -1,6 +1,7 @@
 /* Трёхмерный генплан: объёмы секций по схеме генерального плана. three.js r160 */
 (function () {
   'use strict';
+  function start() {
   var D = window.ALTA, T = window.THREE;
   var view = document.getElementById('gpView');
   var canvas = document.getElementById('gpCanvas');
@@ -284,4 +285,8 @@
   window.addEventListener('resize', function () { resize(); });
   resize(); restyle(); placeCamera();
   onView(document.body.dataset.view);
+  }
+  // на телефоне 3D-генплан собирается только по кнопке «Смотреть в 3D»
+  if (document.documentElement.classList.contains('m')) window.ALTA_gpStart = function () { if (!start.done) { start.done = true; start(); } };
+  else start();
 })();

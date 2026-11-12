@@ -87,14 +87,14 @@
     roomsEl.innerHTML = rooms.map(function (r, i) {
       return '<button type="button" data-i="' + i + '"><img src="' + r.img + '" alt=""><span>' + r.name + '</span><i></i></button>';
     }).join('');
-    root.classList.add('is-open');
+    root.classList.add('is-open'); document.body.classList.add('tour-open');
     root.inert = false; root.setAttribute('aria-hidden', 'false');
     playing = true; playBtn.textContent = 'Пауза'; root.classList.remove('is-paused');
     show(0, 1);
   }
   function close() {
     clearTimeout(timer);
-    root.classList.remove('is-open');
+    root.classList.remove('is-open'); document.body.classList.remove('tour-open');
     root.inert = true; root.setAttribute('aria-hidden', 'true');
     layers.forEach(function (l) { if (l._v) l._v.pause(); });
     if (window.ALTA_pickerRender) window.ALTA_pickerRender();

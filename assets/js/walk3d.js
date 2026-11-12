@@ -1024,8 +1024,15 @@
     $('#wkPhotos').addEventListener('click', function () { if (window.ALTA_openTour && info.tour) window.ALTA_openTour(info.tour); });
     window.addEventListener('resize', function () { if (root.classList.contains('is-open')) { resize(); kick(); } });
   }
-  var helpT;
+  var helpT, rotEl, rotT;
   function hideHelp() { help.classList.add('is-off'); }
+  // в вертикальном положении телефона — короткая подсказка повернуть его (в горизонтали обзор шире)
+  function rotHint() {
+    if (!phone() || innerWidth > innerHeight) return;
+    if (!rotEl) { rotEl = document.createElement('div'); rotEl.className = 'wk-rotate'; rotEl.setAttribute('aria-hidden', 'true'); rotEl.innerHTML = '<i></i><span>Поверните телефон —<br>так обзор шире</span>'; root.appendChild(rotEl); }
+    rotEl.classList.add('is-on'); clearTimeout(rotT);
+    rotT = setTimeout(function () { rotEl.classList.remove('is-on'); }, 3600);
+  }
 
   /* ───────── цикл ───────── */
   function kick() { if (loading) return; if (!running) { running = true; clock.getDelta(); requestAnimationFrame(tick); } }
@@ -1187,6 +1194,7 @@
                   ? '<span><b>Джойстик</b> — идти</span><span><b>Свайп</b> — осмотреться</span><span><b>Касание пола</b> — перейти</span>'
                   : '<span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> идти</span><span><kbd>Мышь</kbd> осмотреться</span><span><kbd>Клик по полу</kbd> перейти</span><span><kbd>Shift</kbd> быстрее</span><span><kbd>F</kbd> мебель</span>';
                 clearTimeout(helpT); helpT = setTimeout(hideHelp, 9000);
+                rotHint();
                 kick();
                 setTimeout(function () { if (my === token) setFurniture(true); }, 380);
                 setTimeout(function () { if (my === token) mirrors(); }, 2100);

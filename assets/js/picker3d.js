@@ -364,7 +364,7 @@
       var tinfo = { type: a2.type, name: TYPES[a2.type].name, n: a2.n, floor: st.floor, section: st.b.id, total: a2.total };
       window.ALTA_openWalk && window.ALTA_openWalk({ st: st.b.st, n: a2.n, mirror: tower.group.scale.x < 0, floor: st.floor, section: st.b.id, name: TYPES[a2.type].name, total: a2.total, tour: tinfo });
     } else if (k === 'plan') { window.ALTA_showFloorPlan && window.ALTA_showFloorPlan(st.b.st); }
-    else if (k === 'card' && window.ALTA_openFlat) { var id = st.b.id + '-' + st.floor + '-' + st.apt; close(); window.ALTA_openFlat(id); }
+    else if (k === 'card' && window.ALTA_openFlat) { var id = st.b.id + '-' + st.floor + '-' + st.apt; close(); window.ALTA_openFlat(id, { solo: true }); }
     else if (k === 'sec-prev' || k === 'sec-next') {
       var i = HOMES.indexOf(st.b) + (k === 'sec-next' ? 1 : -1);
       i = (i + HOMES.length) % HOMES.length;

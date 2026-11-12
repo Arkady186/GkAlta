@@ -10,6 +10,8 @@
   var within = function (p, ms) { return Promise.race([p, wait(ms)]); };
   var fmt = function (n, d) { return n.toLocaleString('ru-RU', { minimumFractionDigits: d || 0, maximumFractionDigits: d == null ? 2 : d }); };
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // телефон: отдельная мобильная версия — обычная прокрутка, без видео-переходов и полноэкранных сцен
+  var M = document.documentElement.classList.contains('m');
 
   var SC = D.scenes;
   var IDS = SC.map(function (s) { return s.id; });
@@ -33,7 +35,7 @@
     img.alt = ''; img.decoding = 'async';
     p.appendChild(img);
     p._img = img; p._src = lite(s.img);
-    if (s.loop && !reduce) {
+    if (s.loop && !reduce && !M) {
       var v = document.createElement('video');
       v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
       v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
@@ -195,6 +197,7 @@
   function setActive(id) {
     IDS.forEach(function (k) {
       var on = k === id, el = views[k];
+      if (M) return;
       el.classList.toggle('is-active', on);
       el.inert = !on;
       el.setAttribute('aria-hidden', String(!on));
@@ -206,7 +209,7 @@
     var n = SC[idx(id) + 1];
     body.classList.toggle('is-last', !n);
     nextLabel.textContent = n ? n.name : '';
-    try { history.replaceState(null, '', id === 'top' ? location.pathname + location.search : '#' + id); } catch (e) {}
+    if (!M) try { history.replaceState(null, '', id === 'top' ? location.pathname + location.search : '#' + id); } catch (e) {}
     window.dispatchEvent(new CustomEvent('alta:view', { detail: id }));
   }
 
@@ -280,7 +283,7 @@
   function modalOpen() { var c = body.classList; return c.contains('picker-open') || c.contains('cat-open') || c.contains('walk-open'); }
   var acc = 0, lastWheel = 0, blocked = false;
   window.addEventListener('wheel', function (ev) {
-    if (lb.open || modalOpen()) return;
+    if (M || lb.open || modalOpen()) return;
     if (Math.abs(ev.deltaY) < Math.abs(ev.deltaX)) return;
     if (canScroll(ev.target, ev.deltaY)) return;
     ev.preventDefault();
@@ -295,7 +298,7 @@
 
   var ts = null;
   window.addEventListener('touchstart', function (e) {
-    if (e.touches.length !== 1 || lb.open || modalOpen()) { ts = null; return; }
+    if (M || e.touches.length !== 1 || lb.open || modalOpen()) { ts = null; return; }
     var t = e.touches[0];
     ts = { x: t.clientX, y: t.clientY, down: canScroll(e.target, 1), up: canScroll(e.target, -1) };
   }, { passive: true });
@@ -310,7 +313,7 @@
   }, { passive: true });
 
   window.addEventListener('keydown', function (e) {
-    if (lb.open || modalOpen() || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (M || lb.open || modalOpen() || e.altKey || e.ctrlKey || e.metaKey) return;
     var tag = e.target.tagName || '';
     if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
     var k = e.key, dir = 0;
@@ -334,7 +337,7 @@
     var id = el.dataset.go || el.getAttribute('href').slice(1);
     if (!views[id]) return;
     e.preventDefault();
-    go(id);
+    if (M) { closeMenu(); scrollToView(id); } else go(id);
   });
   nextBtn.addEventListener('click', function () { go('next'); });
 
@@ -458,6 +461,79 @@
   });
   $('#lightboxClose').addEventListener('click', function () { if (lb.close) lb.close(); else lb.removeAttribute('open'); });
 
+  /* ───────── Мобильная версия ───────── */
+  function scrollToView(id) {
+    var v = views[id]; if (!v) return;
+    var y = id === 'top' ? 0 : v.getBoundingClientRect().top + window.scrollY - 64;
+    window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
+  }
+  var NOPIC = { top: 1, genplan: 1, kvartiry: 1 };
+  function mobileStart(startId) {
+    body.classList.add('is-m');
+    SC.forEach(function (s) {
+      var v = views[s.id]; if (!v) return;
+      v.classList.add('is-active', 'is-in'); v.inert = false; v.removeAttribute('aria-hidden');
+      if (s.id === 'top') {
+        var hi = new Image(); hi.className = 'm-hero-img'; hi.alt = ''; hi.decoding = 'async';
+        try { hi.fetchPriority = 'high'; } catch (e) {}
+        hi.src = lite(s.img); v.insertBefore(hi, v.firstChild); return;
+      }
+      if (NOPIC[s.id]) return;
+      var fig = document.createElement('figure'); fig.className = 'm-pic';
+      fig.innerHTML = '<img src="' + lite(s.img) + '" alt="" loading="lazy" decoding="async">';
+      var sc = $('.view-scroll', v); sc.insertBefore(fig, sc.firstChild);
+    });
+    // загрузка: ждём только картинку первого экрана
+    var hero = $('.m-hero-img');
+    within(new Promise(function (r) { if (hero.complete) r(); else hero.onload = hero.onerror = r; }), 3000).then(function () {
+      bar.style.width = '100%'; return wait(150);
+    }).then(function () { document.documentElement.classList.add('is-ready'); });
+    // какая секция на экране: подсветка меню, счётчики, 3D-генплан рисуется только когда виден
+    var seen = {};
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var id = en.target.id;
+          if (!seen[id]) { seen[id] = 1; countUp(en.target); }
+          if (current !== id) setActive(id);
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' });
+      IDS.forEach(function (id) { io.observe(views[id]); });
+    }
+    setActive('top');
+    window.addEventListener('scroll', function () { body.classList.toggle('is-scrolled', window.scrollY > 30); }, { passive: true });
+    if (startId !== 'top') setTimeout(function () { scrollToView(startId); }, 400);
+  }
+
+  // генплан на телефоне: кадр + список секций; 3D запускается только по кнопке
+  var HOMES = D.buildings.filter(function (b) { return b.kind === 'home'; });
+  var ROMAN = ['', 'I', 'II', 'III', 'IV'];
+  $('#gpList').innerHTML = '<p class="gp-list-l">Секции</p><div class="gp-list-g">' + HOMES.map(function (b) {
+    return '<button type="button" class="gp-li" data-floors="' + b.id + '"><b>' + b.id + '</b><span>' + ROMAN[b.phase] + ' очередь<br>' + fmt(b.flats) + ' квартир</span></button>';
+  }).join('') + '</div>';
+  $('#gpPoster').addEventListener('click', function () {
+    body.classList.add('gp-3d');
+    if (window.ALTA_gpStart) window.ALTA_gpStart();
+    current = null; setActive('genplan');
+    requestAnimationFrame(function () { $('#gpView').scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); });
+  });
+
+  // нижняя панель: телефон и мессенджеры из data.js
+  var C = D.contacts || {}, ws = $('#writeSheet');
+  if (C.phone) { var call = $('#tabCall'); call.hidden = false; call.href = 'tel:' + C.phone.replace(/[^\d+]/g, ''); }
+  var ways = [];
+  if (C.telegram) ways.push(['Telegram', 'https://t.me/' + C.telegram.replace(/^@/, '')]);
+  if (C.whatsapp) ways.push(['WhatsApp', 'https://wa.me/' + C.whatsapp.replace(/\D/g, '')]);
+  if (C.phone) ways.push(['Позвонить ' + C.phone, 'tel:' + C.phone.replace(/[^\d+]/g, '')]);
+  if (C.email) ways.push(['Почта ' + C.email, 'mailto:' + C.email]);
+  function sheet(on) { ws.classList.toggle('is-open', on); ws.inert = !on; ws.setAttribute('aria-hidden', String(!on)); }
+  if (ways.length > 1) {
+    $('#writeList').innerHTML = ways.map(function (w) { return '<a class="m-way" href="' + w[1] + '"' + (/^http/.test(w[1]) ? ' target="_blank" rel="noopener"' : '') + '>' + w[0] + '</a>'; }).join('');
+    $('#tabWrite').addEventListener('click', function (e) { e.preventDefault(); sheet(true); });
+  } else if (C.email) $('#tabWrite').href = 'mailto:' + C.email;
+  ws.addEventListener('click', function (e) { if (e.target.closest('[data-ws="close"]') || e.target.closest('.m-way')) sheet(false); });
+
   /* ───────── Коммерция и компании ───────── */
   var sum = D.retail.reduce(function (s, r) { return s + r.area; }, 0);
   $('#komRows').innerHTML = D.retail.map(function (r) {
@@ -471,6 +547,7 @@
   /* ───────── Старт ───────── */
   var bar = $('#loaderBar');
   var startId = views[location.hash.slice(1)] ? location.hash.slice(1) : 'top';
+  if (M) { mobileStart(startId); return; }
   setActive(startId);
   var first = loadPlate(startId).then(function () { bar.style.width = '60%'; });
   var loop = plates.top._loop;

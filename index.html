@@ -7,8 +7,8 @@
 <meta name="description" content="Жилой комплекс на улице Красных Шахтёров в Краснодоне: 11 секций по 16 этажей, 2 055 квартир от студий до трёхкомнатных, 9 850 м² коммерческих помещений. Застройщик — ООО СЗ «АЛЬТА».">
 <meta name="theme-color" content="#06170d">
 <link rel="icon" href="assets/img/icon.png">
-<link rel="stylesheet" href="assets/css/site.css?v=20261112g">
-<script>document.documentElement.className='js'</script>
+<link rel="stylesheet" href="assets/css/site.css?v=20261112h">
+<script>(function(d){d.className='js';try{if(matchMedia('(max-width:860px)').matches)d.className+=' m'}catch(e){}})(document.documentElement)</script>
 </head>
 <body data-view="top">
 
@@ -63,6 +63,19 @@
         <a class="btn btn-solid" href="#genplan">Открыть 3D-генплан</a>
         <a class="btn btn-glass" href="#kvartiry">Планировки квартир</a>
       </div>
+      <div class="m-pick">
+        <p class="m-pick-l">Какую квартиру ищете?</p>
+        <div class="m-formats">
+          <button type="button" data-catalog="0"><b>Студии</b><span>от 29 м²</span></button>
+          <button type="button" data-catalog="1"><b>1-комнатные</b><span>от 33 м²</span></button>
+          <button type="button" data-catalog="2"><b>2-комнатные</b><span>от 40 м²</span></button>
+          <button type="button" data-catalog="3"><b>3-комнатные</b><span>от 58 м²</span></button>
+        </div>
+        <div class="m-pick-acts">
+          <button type="button" class="btn btn-solid" data-catalog="all">Подобрать квартиру</button>
+          <button type="button" class="btn btn-glass" data-floors="">По этажам</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -107,6 +120,10 @@
           </div>
         </div>
         <div class="gp" data-in>
+          <button type="button" class="gp-poster" id="gpPoster" aria-label="Открыть трёхмерный генплан">
+            <img src="assets/img/m/genplan.jpg" alt="" loading="lazy" decoding="async" width="900" height="525">
+            <span class="gp-poster-b">Смотреть в 3D</span>
+          </button>
           <div class="gp-view" id="gpView">
             <canvas id="gpCanvas" aria-label="Трёхмерная модель квартала"></canvas>
             <div class="gp-labels" id="gpLabels"></div>
@@ -129,6 +146,7 @@
           </div>
           <aside class="gp-card" id="gpCard" aria-live="polite"></aside>
         </div>
+        <div class="gp-list" id="gpList"></div>
       </div>
     </div>
   </div>
@@ -269,6 +287,50 @@
 
 </main>
 
+<nav class="tabbar" id="tabbar" aria-label="Быстрые действия">
+  <button type="button" data-catalog="all"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span>Квартиры</span></button>
+  <button type="button" data-floors=""><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 21 8l-9 4.5L3 8z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16 9 4.5 9-4.5"/></svg><span>По этажам</span></button>
+  <a href="#genplan" data-tab="genplan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6z"/><path d="M9 4v14M15 6v14"/></svg><span>Генплан</span></a>
+  <a href="#" id="tabCall" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5h3l1.5 4.2-2.1 1.4a11 11 0 0 0 5.9 5.9l1.4-2.1 4.2 1.5v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/></svg><span>Позвонить</span></a>
+  <a href="mailto:gk.alta.2026@mail.ru" id="tabWrite"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>Написать</span></a>
+</nav>
+
+<div class="m-sheet" id="writeSheet" role="dialog" aria-modal="true" aria-label="Связаться с нами" aria-hidden="true" inert>
+  <div class="m-sheet-bg" data-ws="close"></div>
+  <div class="m-sheet-box"><i class="m-sheet-grip"></i><p class="m-sheet-t">Связаться с нами</p><div id="writeList"></div><button type="button" class="btn btn-line" data-ws="close">Закрыть</button></div>
+</div>
+
+<!-- Выбор квартиры по этажам (лёгкий, без 3D) -->
+<div class="chooser" id="chooser" role="dialog" aria-modal="true" aria-labelledby="chTitle" aria-hidden="true" inert>
+  <header class="ch-top">
+    <h2 class="ch-title" id="chTitle" tabindex="-1">Выбор по этажам</h2>
+    <button type="button" class="btn btn-glass ch-x" data-ch="3d">Дом в 3D</button>
+    <button type="button" class="btn btn-glass ch-x" data-ch="close">Закрыть</button>
+  </header>
+  <div class="ch-body">
+    <div class="ch-secrow">
+      <p class="ch-l">Секция</p>
+      <div class="ch-secs" id="chSecs" role="group" aria-label="Секция"></div>
+    </div>
+    <div class="ch-main">
+      <div class="ch-fcol">
+        <p class="ch-l">Этаж</p>
+        <div class="ch-floors" id="chFloors" role="group" aria-label="Этаж"></div>
+      </div>
+      <div class="ch-stage">
+        <div class="ch-side">
+          <div class="ch-floor-big" id="chFloorBig" aria-live="polite"></div>
+          <p class="ch-info" id="chSecInfo"></p>
+          <p class="ch-tip"><span class="ch-tip-t">Проведите по плану влево или вправо — соседний этаж</span><span class="ch-tip-k">Стрелки ↑ ↓ — соседний этаж</span></p>
+          <div class="ch-legend" id="chLegend"></div>
+        </div>
+        <div class="ch-plan" id="chPlan"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ch-pick" id="chPick" aria-live="polite"></div>
+</div>
+
 <!-- Выбор квартиры в 3D -->
 <div class="catalog" id="catalog" role="dialog" aria-modal="true" aria-labelledby="catTitle" aria-hidden="true" inert>
   <header class="cat-top">
@@ -367,16 +429,17 @@
   <div class="lightbox-scroll"><img id="lightboxImg" alt=""></div>
 </dialog>
 
-<script src="assets/js/data.js?v=20261112g"></script>
-<script src="assets/js/site.js?v=20261112g"></script>
-<script src="assets/js/three.min.js?v=20261112g" defer></script>
-<script src="assets/js/ground.js?v=20261112g" defer></script>
-<script src="assets/js/genplan3d.js?v=20261112g" defer></script>
-<script src="assets/js/floors.js?v=20261112g" defer></script>
-<script src="assets/js/picker3d.js?v=20261112g" defer></script>
-<script src="assets/js/tour.js?v=20261112g" defer></script>
-<script src="assets/js/walk-data.js?v=20261112g" defer></script>
-<script src="assets/js/walk3d.js?v=20261112g" defer></script>
-<script src="assets/js/catalog.js?v=20261112g" defer></script>
+<script src="assets/js/data.js?v=20261112h"></script>
+<script src="assets/js/site.js?v=20261112h"></script>
+<script src="assets/js/three.min.js?v=20261112h" defer></script>
+<script src="assets/js/ground.js?v=20261112h" defer></script>
+<script src="assets/js/genplan3d.js?v=20261112h" defer></script>
+<script src="assets/js/floors.js?v=20261112h" defer></script>
+<script src="assets/js/picker3d.js?v=20261112h" defer></script>
+<script src="assets/js/tour.js?v=20261112h" defer></script>
+<script src="assets/js/walk-data.js?v=20261112h" defer></script>
+<script src="assets/js/walk3d.js?v=20261112h" defer></script>
+<script src="assets/js/catalog.js?v=20261112h" defer></script>
+<script src="assets/js/chooser.js?v=20261112h" defer></script>
 </body>
 </html>
