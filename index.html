@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ГК Альта — жилой комплекс в Краснодоне</title>
+<meta name="description" content="Жилой комплекс на улице Красных Шахтёров в Краснодоне: 11 секций по 16 этажей, 2 055 квартир от студий до трёхкомнатных, 9 850 м² коммерческих помещений. Застройщик — ООО СЗ «АЛЬТА».">
+<meta name="theme-color" content="#06170d">
+<link rel="icon" href="assets/img/icon.png">
+<link rel="stylesheet" href="assets/css/site.css?v=20261112c">
+<script>document.documentElement.className='js'</script>
+</head>
+<body data-view="top">
+
+<div class="loader" id="loader" aria-hidden="true">
+  <img src="assets/img/logo-ivory.png" alt="" width="220">
+  <div class="loader-bar"><i id="loaderBar"></i></div>
+</div>
+
+<!-- Кадры сцен и видео-пролёты -->
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="stage-inner" id="stageInner">
+    <div class="plates" id="plates"></div>
+    <div class="transit" id="transit"></div>
+  </div>
+  <div class="stage-flash" id="flash"></div>
+  <div class="stage-vignette"></div>
+  <div class="stage-grain"></div>
+</div>
+
+<header class="bar" id="bar">
+  <a class="brand" href="#top" aria-label="ГК Альта — в начало">
+    <img src="assets/img/logo-ivory.png" alt="ГК Альта" width="104" height="60">
+  </a>
+  <nav class="nav" id="nav" aria-label="Разделы">
+    <a href="#kvartal">Квартал</a>
+    <a href="#genplan">Генплан</a>
+    <a href="#kvartiry">Квартиры</a>
+    <a href="#kommerciya">Коммерция</a>
+    <a href="#company">Компания</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <a class="btn btn-glass bar-cta" href="mailto:gk.alta.2026@mail.ru">Написать нам</a>
+  <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav"><i></i><i></i></button>
+</header>
+
+<nav class="rail" id="rail" aria-label="Сцены"></nav>
+
+<button class="next" id="next" type="button"><span class="next-label" id="nextLabel"></span><i class="next-line"></i></button>
+
+<main>
+
+<section class="view view-hero" id="top" aria-labelledby="t-top">
+  <div class="scrim scrim-hero"></div>
+  <div class="view-scroll">
+    <div class="wrap hero-wrap">
+      <p class="hero-place" data-in>Краснодон, улица Красных Шахтёров</p>
+      <h1 class="title title-hero" id="t-top"><span class="line"><span>Дом, который</span></span><span class="line"><span>меняет город</span></span></h1>
+      <p class="lead" data-in>Новый жилой квартал от ГК Альта: одиннадцать шестнадцатиэтажных секций, 2&nbsp;055&nbsp;квартир и торговая галерея на первых этажах.</p>
+      <div class="actions" data-in>
+        <a class="btn btn-solid" href="#genplan">Открыть 3D-генплан</a>
+        <a class="btn btn-glass" href="#kvartiry">Планировки квартир</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="kvartal" aria-labelledby="t-kvartal">
+  <div class="scrim scrim-left"></div>
+  <div class="view-scroll">
+    <div class="wrap">
+      <div class="copy copy-wide">
+        <h2 class="title" id="t-kvartal"><span class="line"><span>Квартал, собранный</span></span><span class="line"><span>как единое целое</span></span></h2>
+        <i class="rule" data-in></i>
+        <p class="lead" data-in>Четыре группы домов образуют дворы, а первые этажи каждой секции отданы магазинам, кафе и сервисам. Три отдельных двухэтажных здания дополняют торговую линию квартала.</p>
+      </div>
+      <dl class="figures">
+        <div data-in><dt>секций</dt><dd data-count="11">11</dd></div>
+        <div data-in><dt>этажей в каждой</dt><dd data-count="16">16</dd></div>
+        <div data-in><dt>квартир</dt><dd data-count="2055">2&nbsp;055</dd></div>
+        <div data-in><dt>м² жилья</dt><dd data-count="89003">89&nbsp;003</dd></div>
+        <div data-in><dt>м² коммерции</dt><dd data-count="9850">9&nbsp;850</dd></div>
+        <div data-in><dt>очереди строительства</dt><dd data-count="4">4</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section class="view view-panel" id="genplan" aria-labelledby="t-genplan">
+  <div class="scrim scrim-deep"></div>
+  <div class="view-scroll">
+    <div class="wrap wrap-wide">
+      <div class="glass">
+        <div class="gp-head">
+          <div>
+            <h2 class="title title-m" id="t-genplan"><span class="line"><span>Генплан в объёме</span></span></h2>
+            <p class="muted" data-in>Вращайте модель и нажимайте на секции. Модель построена по схеме генерального плана.</p>
+          </div>
+          <div class="chips" id="phaseChips" role="group" aria-label="Очередь строительства" data-in>
+            <button class="chip is-on" data-phase="0">Весь квартал</button>
+            <button class="chip" data-phase="1">I очередь</button>
+            <button class="chip" data-phase="2">II очередь</button>
+            <button class="chip" data-phase="3">III очередь</button>
+            <button class="chip" data-phase="4">IV очередь</button>
+          </div>
+        </div>
+        <div class="gp" data-in>
+          <div class="gp-view" id="gpView">
+            <canvas id="gpCanvas" aria-label="Трёхмерная модель квартала"></canvas>
+            <div class="gp-labels" id="gpLabels"></div>
+            <p class="gp-hint" id="gpHint">Потяните, чтобы повернуть</p>
+          </div>
+          <div class="gp-plan" id="gpPlan" aria-hidden="true" inert>
+            <div class="gp-plan-head">
+              <h3 id="gpPlanTitle">Секция</h3>
+              <div class="seg" id="gpPlanFloor" role="group" aria-label="Этаж">
+                <button class="is-on" data-floor="typical">Жилой этаж</button>
+                <button data-floor="floor1">Первый этаж</button>
+              </div>
+              <button class="btn btn-line gp-plan-close" id="gpPlanClose" type="button">К модели</button>
+            </div>
+            <button class="plan-frame gp-plan-frame" id="gpPlanFrame" type="button" aria-label="Открыть план крупно">
+              <img id="gpPlanImg" alt="">
+              <span class="plan-zoom">Увеличить</span>
+            </button>
+            <p class="plan-cap" id="gpPlanCap"></p>
+          </div>
+          <aside class="gp-card" id="gpCard" aria-live="polite"></aside>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="dvor" aria-labelledby="t-dvor">
+  <div class="scrim scrim-right"></div>
+  <div class="view-scroll">
+    <div class="wrap wrap-right">
+      <div class="copy">
+        <h2 class="title" id="t-dvor"><span class="line"><span>Дворы</span></span><span class="line"><span>между домами</span></span></h2>
+        <i class="rule" data-in></i>
+        <p class="lead" data-in>Корпуса расставлены так, чтобы между ними оставалось место для зелени, площадок и прогулок. Въезды и подъезды к секциям вынесены на внутренние проезды.</p>
+        <p class="note" data-in>Изображение — предварительная визуализация. Благоустройство уточняется в проекте.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view view-panel" id="kvartiry" aria-labelledby="t-kvartiry">
+  <div class="scrim scrim-deep"></div>
+  <div class="view-scroll">
+    <div class="wrap wrap-wide">
+      <div class="glass kv">
+        <div class="kv-side">
+          <h2 class="title title-m" id="t-kvartiry"><span class="line"><span>Шесть форматов</span></span><span class="line"><span>квартир</span></span></h2>
+          <p class="muted" data-in>От студии 29&nbsp;м² до трёхкомнатной 75&nbsp;м². Площади с учётом лоджий и балконов.</p>
+          <div class="kv-list" id="kvList"></div>
+        </div>
+        <div class="plans" data-in>
+          <button class="kv-3d" type="button" data-picker="1"><span><b>Выбрать квартиру в 3D</b>Секция, этаж, квартира — и прогулка по ней</span><i></i></button>
+          <div class="plans-head">
+            <div class="chips" id="planType" role="group" aria-label="Тип секции"></div>
+            <div class="seg" id="planFloor" role="group" aria-label="Этаж">
+              <button class="is-on" data-floor="typical">Жилой этаж</button>
+              <button data-floor="floor1">Первый этаж</button>
+            </div>
+          </div>
+          <button class="plan-frame" id="planFrame" aria-label="Открыть план крупно">
+            <img id="planImg" alt="">
+            <span class="plan-zoom">Увеличить</span>
+          </button>
+          <p class="plan-cap" id="planCap"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="holl" aria-labelledby="t-holl">
+  <div class="scrim scrim-left"></div>
+  <div class="view-scroll">
+    <div class="wrap">
+      <div class="copy">
+        <h2 class="title" id="t-holl"><span class="line"><span>Вход, в который</span></span><span class="line"><span>приятно</span></span><span class="line"><span>возвращаться</span></span></h2>
+        <i class="rule" data-in></i>
+        <p class="lead" data-in>В каждой секции — холл на первом этаже, лифтовая группа с двумя лифтами и колясочная. Жилые этажи начинаются со второго, поэтому ни одна квартира не выходит окнами на тротуар.</p>
+        <p class="note" data-in>Изображение — предварительная визуализация интерьера.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view view-bottom" id="vid" aria-labelledby="t-vid">
+  <div class="scrim scrim-bottom"></div>
+  <div class="view-scroll">
+    <div class="wrap">
+      <div class="copy copy-wide">
+        <h2 class="title" id="t-vid"><span class="line"><span>Пятнадцать жилых</span></span><span class="line"><span>этажей над городом</span></span></h2>
+        <i class="rule" data-in></i>
+        <p class="lead" data-in>Краснодон — малоэтажный город, и с верхних этажей открывается вид до самого горизонта. В квартирах предусмотрены лоджии и балконы.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view view-panel" id="kommerciya" aria-labelledby="t-kom">
+  <div class="scrim scrim-deep"></div>
+  <div class="view-scroll">
+    <div class="wrap wrap-wide">
+      <div class="glass kom">
+        <div class="kom-copy">
+          <h2 class="title title-m" id="t-kom"><span class="line"><span>Коммерческие</span></span><span class="line"><span>помещения</span></span></h2>
+          <p class="lead" data-in>Встроенные помещения на первых этажах всех секций и три отдельных двухэтажных здания — для магазинов, кафе, аптек и услуг.</p>
+          <p class="kom-total" data-in><b data-count="9850" data-suffix=" м²">9&nbsp;850&nbsp;м²</b><span>общая площадь нежилых помещений</span></p>
+          <a class="btn btn-solid" data-in href="mailto:gk.alta.2026@mail.ru?subject=%D0%9A%D0%BE%D0%BC%D0%BC%D0%B5%D1%80%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B5%20%D0%BF%D0%BE%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F">Запросить помещение</a>
+        </div>
+        <div class="kom-table-wrap" data-in>
+          <table class="kom-table">
+            <thead><tr><th>Помещения</th><th>Очередь</th><th>Этажей</th><th class="num">Площадь, м²</th></tr></thead>
+            <tbody id="komRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="company" aria-labelledby="t-company">
+  <div class="scrim scrim-left"></div>
+  <div class="view-scroll">
+    <div class="wrap">
+      <div class="copy">
+        <h2 class="title" id="t-company"><span class="line"><span>Группа</span></span><span class="line"><span>компаний Альта</span></span></h2>
+        <i class="rule" data-in></i>
+        <p class="lead" data-in>Застройщик квартала — ООО «Специализированный застройщик „АЛЬТА“», Луганск. Компания входит в группу компаний Альта.</p>
+        <div class="companies" id="companies" data-in></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view view-contacts" id="contacts" aria-labelledby="t-contacts">
+  <div class="scrim scrim-full"></div>
+  <div class="view-scroll">
+    <div class="wrap wrap-wide contacts">
+      <div>
+        <h2 class="title" id="t-contacts"><span class="line"><span>Расскажем</span></span><span class="line"><span>о квартирах</span></span><span class="line"><span>и помещениях</span></span></h2>
+        <p class="lead" data-in>Напишите нам — пришлём планировки, расскажем об очередях строительства и условиях.</p>
+        <a class="mail" data-in href="mailto:gk.alta.2026@mail.ru">gk.alta.2026@mail.ru</a>
+      </div>
+      <dl class="addr" data-in>
+        <div><dt>Объект</dt><dd>Луганская Народная Республика, г.&nbsp;Краснодон, ул.&nbsp;Красных Шахтёров</dd></div>
+        <div><dt>Застройщик</dt><dd>ООО СЗ «АЛЬТА»</dd></div>
+        <div><dt>Офис</dt><dd>291011, г.&nbsp;Луганск, кв-л Еременко, д.&nbsp;7, пом.&nbsp;85</dd></div>
+      </dl>
+    </div>
+    <footer class="foot" data-in>
+      <img src="assets/img/logo-ivory.png" alt="ГК Альта" width="86" height="50">
+      <p>Изображения и видео на сайте — предварительные визуализации; внешний вид домов, благоустройство и интерьеры могут отличаться. Площади и количество помещений приведены по проектным материалам и могут уточняться. Информация не является публичной офертой.</p>
+      <p class="foot-c">© 2026 ГК Альта</p>
+    </footer>
+  </div>
+</section>
+
+</main>
+
+<!-- Выбор квартиры в 3D -->
+<div class="picker" id="picker" role="dialog" aria-label="Выбор квартиры" aria-hidden="true" inert>
+  <canvas id="pkCanvas" aria-label="Трёхмерная модель секции"></canvas>
+  <div class="pk-labels" id="pkLabels"></div>
+  <header class="pk-top">
+    <img class="pk-logo" src="assets/img/logo-ivory.png" alt="ГК Альта" width="78" height="45">
+    <nav class="pk-crumbs" id="pkCrumbs" aria-label="Где вы"></nav>
+    <button class="btn btn-glass pk-chess-toggle" id="pkChessToggle" type="button">Шахматка</button>
+    <button class="btn btn-glass pk-close" id="pkClose" type="button">Закрыть</button>
+  </header>
+  <aside class="pk-card" id="pkCard" aria-live="polite"></aside>
+  <aside class="pk-chess" id="pkChess" aria-label="Шахматка этажей"></aside>
+  <p class="pk-hint" id="pkHint"></p>
+  <div class="pk-tip" id="pkTip" role="status"></div>
+</div>
+
+<!-- 3D-прогулка от первого лица -->
+<div class="walk" id="walk" role="dialog" aria-label="3D-прогулка по квартире" aria-hidden="true" inert>
+  <canvas id="wkCanvas" aria-label="Квартира в 3D"></canvas>
+  <div class="wk-cross" aria-hidden="true"></div>
+  <header class="wk-top">
+    <div class="wk-title" id="wkTitle"></div>
+    <button class="wk-furn is-on" id="wkFurn" type="button" aria-pressed="true"><i></i><span>Мебель</span></button>
+    <button class="btn btn-glass wk-photos" id="wkPhotos" type="button">Фото</button>
+    <button class="btn btn-glass" id="wkClose" type="button">Закрыть</button>
+  </header>
+  <p class="wk-room" id="wkRoom" aria-live="polite"></p>
+  <canvas class="wk-map" id="wkMap" aria-label="План квартиры: нажмите, чтобы переместиться"></canvas>
+  <div class="wk-help" id="wkHelp"></div>
+  <div class="wk-stick" id="wkStick" aria-hidden="true"><i></i></div>
+  <p class="wk-note">Визуализация по планировке. Мебель расставлена для примера.</p>
+  <div class="wk-load" id="wkLoad" aria-live="polite">
+    <div class="wk-load-in">
+      <img src="assets/img/logo-ivory.png" alt="" width="84" height="48">
+      <p class="wk-load-t" id="wkLoadT">Квартира</p>
+      <div class="wk-bar"><i id="wkBar"></i></div>
+      <p class="wk-load-s" id="wkLoadS">Загружаем планировку</p>
+    </div>
+  </div>
+</div>
+
+<!-- Прогулка по квартире -->
+<div class="tour" id="tour" role="dialog" aria-label="Прогулка по квартире" aria-hidden="true" inert>
+  <div class="tour-stage" id="tourStage"></div>
+  <div class="tour-shade"></div>
+  <header class="tour-top">
+    <div class="tour-title" id="tourTitle"></div>
+    <button class="btn btn-glass tour-play" id="tourPlay" type="button" aria-pressed="true">Пауза</button>
+    <button class="btn btn-glass" id="tourClose" type="button">Закрыть</button>
+  </header>
+  <div class="tour-caption" id="tourCap"></div>
+  <button class="tour-arrow tour-prev" id="tourPrev" type="button" aria-label="Предыдущая комната"></button>
+  <button class="tour-arrow tour-next" id="tourNext" type="button" aria-label="Следующая комната"></button>
+  <nav class="tour-rooms" id="tourRooms" aria-label="Комнаты"></nav>
+  <p class="tour-note">Пример интерьера: мебель и отделка показаны для вдохновения.</p>
+</div>
+
+<dialog class="lightbox" id="lightbox" aria-label="План этажа">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Закрыть">Закрыть</button>
+  <div class="lightbox-scroll"><img id="lightboxImg" alt=""></div>
+</dialog>
+
+<script src="assets/js/data.js?v=20261112c"></script>
+<script src="assets/js/site.js?v=20261112c"></script>
+<script src="assets/js/three.min.js?v=20261112c" defer></script>
+<script src="assets/js/ground.js?v=20261112c" defer></script>
+<script src="assets/js/genplan3d.js?v=20261112c" defer></script>
+<script src="assets/js/floors.js?v=20261112c" defer></script>
+<script src="assets/js/picker3d.js?v=20261112c" defer></script>
+<script src="assets/js/tour.js?v=20261112c" defer></script>
+<script src="assets/js/walk-data.js?v=20261112c" defer></script>
+<script src="assets/js/walk3d.js?v=20261112c" defer></script>
+</body>
+</html>
