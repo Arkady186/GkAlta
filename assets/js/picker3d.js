@@ -328,6 +328,7 @@
         '<button class="btn btn-line" data-pk="tour">Фото-прогулка</button>' +
         '<a class="pk-link" href="mailto:gk.alta.2026@mail.ru?subject=' + subj + '">Узнать стоимость</a>' +
         '<button class="pk-link" data-pk="plan">План этажа</button>' +
+        (window.ALTA_openFlat ? '<button class="pk-link" data-pk="card">Карточка квартиры и ссылка</button>' : '') +
         '</div><p class="pk-note">Номер квартиры — порядковый на этаже по проекту. Общая площадь — с учётом лоджий и балконов.</p>';
       hint.textContent = '';
     }
@@ -363,6 +364,7 @@
       var tinfo = { type: a2.type, name: TYPES[a2.type].name, n: a2.n, floor: st.floor, section: st.b.id, total: a2.total };
       window.ALTA_openWalk && window.ALTA_openWalk({ st: st.b.st, n: a2.n, mirror: tower.group.scale.x < 0, floor: st.floor, section: st.b.id, name: TYPES[a2.type].name, total: a2.total, tour: tinfo });
     } else if (k === 'plan') { window.ALTA_showFloorPlan && window.ALTA_showFloorPlan(st.b.st); }
+    else if (k === 'card' && window.ALTA_openFlat) { var id = st.b.id + '-' + st.floor + '-' + st.apt; close(); window.ALTA_openFlat(id); }
     else if (k === 'sec-prev' || k === 'sec-next') {
       var i = HOMES.indexOf(st.b) + (k === 'sec-next' ? 1 : -1);
       i = (i + HOMES.length) % HOMES.length;

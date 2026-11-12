@@ -1,6 +1,7 @@
 /* ГК Альта: полноэкранные сцены и видео-пролёты между ними */
 (function () {
   'use strict';
+  window.ALTA_hash0 = location.hash;                 // ссылка на квартиру (#kv-…) — её откроет каталог
   var D = window.ALTA;
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -276,9 +277,10 @@
     return false;
   }
 
+  function modalOpen() { var c = body.classList; return c.contains('picker-open') || c.contains('cat-open') || c.contains('walk-open'); }
   var acc = 0, lastWheel = 0, blocked = false;
   window.addEventListener('wheel', function (ev) {
-    if (lb.open || body.classList.contains('picker-open')) return;
+    if (lb.open || modalOpen()) return;
     if (Math.abs(ev.deltaY) < Math.abs(ev.deltaX)) return;
     if (canScroll(ev.target, ev.deltaY)) return;
     ev.preventDefault();
@@ -293,7 +295,7 @@
 
   var ts = null;
   window.addEventListener('touchstart', function (e) {
-    if (e.touches.length !== 1 || lb.open || body.classList.contains('picker-open')) { ts = null; return; }
+    if (e.touches.length !== 1 || lb.open || modalOpen()) { ts = null; return; }
     var t = e.touches[0];
     ts = { x: t.clientX, y: t.clientY, down: canScroll(e.target, 1), up: canScroll(e.target, -1) };
   }, { passive: true });
@@ -308,7 +310,7 @@
   }, { passive: true });
 
   window.addEventListener('keydown', function (e) {
-    if (lb.open || body.classList.contains('picker-open') || e.altKey || e.ctrlKey || e.metaKey) return;
+    if (lb.open || modalOpen() || e.altKey || e.ctrlKey || e.metaKey) return;
     var tag = e.target.tagName || '';
     if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
     var k = e.key, dir = 0;
@@ -326,7 +328,7 @@
   document.addEventListener('click', function (e) {
     var pk = e.target.closest('[data-picker]');
     if (pk) { e.preventDefault(); if (window.ALTA_openPicker) window.ALTA_openPicker(+pk.dataset.picker); return; }
-    if (body.classList.contains('picker-open')) return;
+    if (modalOpen()) return;
     var el = e.target.closest('[data-go], a[href^="#"]');
     if (!el) return;
     var id = el.dataset.go || el.getAttribute('href').slice(1);
@@ -365,12 +367,13 @@
   var total = D.flats.reduce(function (s, f) { return s + f.count; }, 0);
   var maxCount = Math.max.apply(null, D.flats.map(function (f) { return f.count; }));
   $('#kvList').innerHTML = D.flats.map(function (f, i) {
-    return '<div class="kv-row" style="--i:' + i + '">' +
+    return '<button type="button" class="kv-row" data-catalog="' + f.code + '" style="--i:' + i + '" aria-label="' + f.name + ': показать все квартиры">' +
       '<div class="kv-name">' + f.name + '</div>' +
       '<div class="kv-area">' + fmt(f.min, 1) + '–' + fmt(f.max, 1) + ' м²</div>' +
       '<div class="kv-count"><b>' + fmt(f.count) + '</b> · ' + fmt(f.count / total * 100, 0) + '%</div>' +
       '<div class="kv-bar"><i style="--w:' + (f.count / maxCount).toFixed(3) + '"></i></div>' +
-      '</div>';
+      '<span class="kv-arrow" aria-hidden="true"></span>' +
+      '</button>';
   }).join('');
 
   var planType = $('#planType'), planFloor = $('#planFloor'), planImg = $('#planImg'), planCap = $('#planCap');

@@ -7,7 +7,7 @@
 <meta name="description" content="Жилой комплекс на улице Красных Шахтёров в Краснодоне: 11 секций по 16 этажей, 2 055 квартир от студий до трёхкомнатных, 9 850 м² коммерческих помещений. Застройщик — ООО СЗ «АЛЬТА».">
 <meta name="theme-color" content="#06170d">
 <link rel="icon" href="assets/img/icon.png">
-<link rel="stylesheet" href="assets/css/site.css?v=20261112f">
+<link rel="stylesheet" href="assets/css/site.css?v=20261112g">
 <script>document.documentElement.className='js'</script>
 </head>
 <body data-view="top">
@@ -36,10 +36,12 @@
     <a href="#kvartal">Квартал</a>
     <a href="#genplan">Генплан</a>
     <a href="#kvartiry">Квартиры</a>
+    <a href="#kvartiry-vse" data-catalog="all" class="nav-cat">Подбор квартир</a>
     <a href="#kommerciya">Коммерция</a>
     <a href="#company">Компания</a>
     <a href="#contacts">Контакты</a>
   </nav>
+  <a class="btn btn-solid bar-cta bar-pick" href="#kvartiry-vse" data-catalog="all">Подобрать квартиру</a>
   <a class="btn btn-glass bar-cta" href="mailto:gk.alta.2026@mail.ru">Написать нам</a>
   <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="nav"><i></i><i></i></button>
 </header>
@@ -157,7 +159,10 @@
           <div class="kv-list" id="kvList"></div>
         </div>
         <div class="plans" data-in>
-          <button class="kv-3d" type="button" data-picker="1"><span><b>Выбрать квартиру в 3D</b>Секция, этаж, квартира — и прогулка по ней</span><i></i></button>
+          <div class="kv-go">
+            <button class="kv-3d kv-cat" type="button" data-catalog="all"><span><b>Все квартиры списком</b>Студии, 1, 2 и 3 комнаты: фильтры по этажу, секции и площади</span><i></i></button>
+            <button class="kv-3d" type="button" data-picker="1"><span><b>Выбрать квартиру в 3D</b>Секция, этаж, квартира — и прогулка по ней</span><i></i></button>
+          </div>
           <div class="plans-head">
             <div class="chips" id="planType" role="group" aria-label="Тип секции"></div>
             <div class="seg" id="planFloor" role="group" aria-label="Этаж">
@@ -265,6 +270,42 @@
 </main>
 
 <!-- Выбор квартиры в 3D -->
+<div class="catalog" id="catalog" role="dialog" aria-modal="true" aria-labelledby="catTitle" aria-hidden="true" inert>
+  <header class="cat-top">
+    <h2 class="cat-title" id="catTitle" tabindex="-1">Квартиры</h2>
+    <div class="cat-tabs" id="catTabs" role="tablist" aria-label="Количество комнат"></div>
+    <button class="btn btn-glass cat-close" id="catClose" type="button">Закрыть</button>
+  </header>
+  <div class="cat-body">
+    <aside class="cat-side">
+      <div class="cat-sheet-bg" id="catSheetBg"></div>
+      <div class="cat-sheet" id="catSheet" aria-label="Фильтры">
+        <div class="cat-sheet-h"><b>Фильтры</b><i></i></div>
+        <div class="cat-filters" id="catFilters"></div>
+        <button class="btn btn-solid cat-apply" id="catApply" type="button">Показать</button>
+      </div>
+    </aside>
+    <div class="cat-main">
+      <div class="cat-bar">
+        <p class="cat-count" id="catCount" aria-live="polite"></p>
+        <div class="cat-sub" id="catSub" hidden></div>
+        <div class="cat-view" id="catView" role="group" aria-label="Вид списка"><button type="button" data-view="flats" aria-pressed="true">Квартиры</button><button type="button" data-view="plans" aria-pressed="false">Планировки</button></div>
+        <button class="cat-fbtn" id="catFilterBtn" type="button" aria-expanded="false">Фильтры <b></b></button>
+      </div>
+      <div class="cat-list" id="catList"></div>
+      <button class="btn btn-line cat-more" id="catMore" type="button" hidden>Показать ещё</button>
+    </div>
+  </div>
+  <div class="flat" id="flat" role="dialog" aria-modal="true" aria-labelledby="flatTitle" aria-hidden="true" inert>
+    <div class="flat-box">
+      <button class="flat-close" id="flatClose" type="button" aria-label="Закрыть"><i></i><i></i></button>
+      <div class="flat-body" id="flatBody"></div>
+      <div class="flat-acts" id="flatActs"></div>
+    </div>
+  </div>
+  <p class="cat-toast" id="catToast" role="status"></p>
+</div>
+
 <div class="picker" id="picker" role="dialog" aria-label="Выбор квартиры" aria-hidden="true" inert>
   <canvas id="pkCanvas" aria-label="Трёхмерная модель секции"></canvas>
   <div class="pk-labels" id="pkLabels"></div>
@@ -326,15 +367,16 @@
   <div class="lightbox-scroll"><img id="lightboxImg" alt=""></div>
 </dialog>
 
-<script src="assets/js/data.js?v=20261112f"></script>
-<script src="assets/js/site.js?v=20261112f"></script>
-<script src="assets/js/three.min.js?v=20261112f" defer></script>
-<script src="assets/js/ground.js?v=20261112f" defer></script>
-<script src="assets/js/genplan3d.js?v=20261112f" defer></script>
-<script src="assets/js/floors.js?v=20261112f" defer></script>
-<script src="assets/js/picker3d.js?v=20261112f" defer></script>
-<script src="assets/js/tour.js?v=20261112f" defer></script>
-<script src="assets/js/walk-data.js?v=20261112f" defer></script>
-<script src="assets/js/walk3d.js?v=20261112f" defer></script>
+<script src="assets/js/data.js?v=20261112g"></script>
+<script src="assets/js/site.js?v=20261112g"></script>
+<script src="assets/js/three.min.js?v=20261112g" defer></script>
+<script src="assets/js/ground.js?v=20261112g" defer></script>
+<script src="assets/js/genplan3d.js?v=20261112g" defer></script>
+<script src="assets/js/floors.js?v=20261112g" defer></script>
+<script src="assets/js/picker3d.js?v=20261112g" defer></script>
+<script src="assets/js/tour.js?v=20261112g" defer></script>
+<script src="assets/js/walk-data.js?v=20261112g" defer></script>
+<script src="assets/js/walk3d.js?v=20261112g" defer></script>
+<script src="assets/js/catalog.js?v=20261112g" defer></script>
 </body>
 </html>
