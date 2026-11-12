@@ -26,7 +26,7 @@
       var im = new Image();
       im.onload = function () { t.image = im; t.needsUpdate = true; res(); };
       im.onerror = function () { res(); };
-      im.src = 'assets/tex/' + name + '?v=20261112e';                    // версия: обновлённые текстуры не берутся из старого кэша
+      im.src = 'assets/tex/' + name + '?v=20261112f';                    // версия: обновлённые текстуры не берутся из старого кэша
     }));
     return t;
   }
@@ -308,6 +308,20 @@
         [[-1], [1]].forEach(function (s) { box(0.04, 0.7, d - 0.2, M.black, s[0] * (w / 2 - 0.16), 0.01, 0, g); box(0.06, 0.02, d - 0.12, M.black, s[0] * (w / 2 - 0.16), 0, 0, g); });
       }
       cyl(0.06, 0.05, 0.16, M.pot, 0.08, 0.75, 0, g); cyl(0.004, 0.004, 0.28, M.walnut, 0.08, 0.91, 0, g);
+    },
+    bar: function (g, w, d) {                                                           // барная стойка у стены, два табурета, подвес
+      var z0 = -d / 2, top = 0.4;
+      slab(w, top, 0.04, 0.02, M.oak, 0, 0.98, z0 + top / 2, g);
+      [[-1], [1]].forEach(function (s) { box(0.04, 0.98, top - 0.06, M.black, s[0] * (w / 2 - 0.12), 0, z0 + top / 2 - 0.02, g); });
+      box(w - 0.2, 0.03, 0.03, M.brass, 0, 0.22, z0 + top - 0.06, g);                    // подставка для ног
+      [-1, 1].forEach(function (s) {
+        var x = s * w * 0.24, z = z0 + top - 0.02;
+        cyl(0.18, 0.18, 0.05, M.velvet, x, 0.72, z, g, 28); cyl(0.165, 0.17, 0.02, M.black, x, 0.7, z, g, 28);
+        cyl(0.018, 0.018, 0.7, M.black, x, 0, z, g); cyl(0.15, 0.17, 0.015, M.black, x, 0, z, g, 28);
+        add(g, cylG(0.13, 0.13, 0.012, 28), M.brass, x, 0.3, z);
+      });
+      cyl(0.004, 0.004, H - 1.75, M.black, 0, 1.75, z0 + 0.2, g, 6);
+      cyl(0.05, 0.13, 0.22, M.black, 0, 1.55, z0 + 0.2, g, 28); cyl(0.12, 0.12, 0.005, M.glow, 0, 1.545, z0 + 0.2, g, 28);
     },
     chair: function (g, w, d) {
       legs(g, 0.42, 0.42, 0.44, 0.03, M.black, 0.022);
