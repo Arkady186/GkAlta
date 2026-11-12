@@ -368,7 +368,8 @@
           ['Площадь квартиры', fmt(f.flat, 2) + ' м²'], ['Жилая площадь', fmt(f.live, 2) + ' м²']]) +
         (rooms.length ? '<p class="fl-sub">Комнаты</p><ul class="fl-rooms">' + rooms.map(function (r) { return '<li><span>' + r.name + '</span><b>' + fmt(r.a, 1) + ' м²</b></li>'; }).join('') + '</ul>' : '') +
         '<p class="fl-sub">Та же планировка на других этажах</p><div class="fl-floors" id="flFloors">' + floors + '</div>' +
-        '<p class="fl-note">Общая площадь — с учётом лоджий и балконов. Планировка по проекту, мебель показана для примера.</p>' +
+        '<p class="fl-note">Общая площадь — с учётом лоджий и балконов. Планировка по проекту, мебель показана для примера. ' +
+          (window.ALTA_docsNote ? window.ALTA_docsNote() : '') + '<a href="#dokumenty" data-docs>Документы застройщика</a></p>' +
       '</div>';
     $('#flatActs').innerHTML =
       '<button type="button" class="btn btn-solid" data-act="walk">Прогуляться в 3D</button>' +

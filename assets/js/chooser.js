@@ -175,7 +175,7 @@
   // что было открыто поверх в момент нажатия (до того, как другие окна закроются по этому же Esc)
   window.addEventListener('keydown', function (e) {
     var c = document.body.classList;
-    e.__over = c.contains('picker-open') || c.contains('walk-open') || c.contains('cat-open') || c.contains('tour-open');
+    e.__over = c.contains('picker-open') || c.contains('walk-open') || c.contains('cat-open') || c.contains('tour-open') || c.contains('docs-open');
   }, true);
   document.addEventListener('keydown', function (e) {
     if (!root.classList.contains('is-open') || e.__over) return;

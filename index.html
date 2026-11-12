@@ -7,7 +7,7 @@
 <meta name="description" content="Жилой комплекс на улице Красных Шахтёров в Краснодоне: 11 секций по 16 этажей, 2 055 квартир от студий до трёхкомнатных, 9 850 м² коммерческих помещений. Застройщик — ООО СЗ «АЛЬТА».">
 <meta name="theme-color" content="#06170d">
 <link rel="icon" href="assets/img/icon.png">
-<link rel="stylesheet" href="assets/css/site.css?v=20261112h">
+<link rel="stylesheet" href="assets/css/site.css?v=20261112i">
 <script>(function(d){d.className='js';try{if(matchMedia('(max-width:860px)').matches)d.className+=' m'}catch(e){}})(document.documentElement)</script>
 </head>
 <body data-view="top">
@@ -39,6 +39,7 @@
     <a href="#kvartiry-vse" data-catalog="all" class="nav-cat">Подбор квартир</a>
     <a href="#kommerciya">Коммерция</a>
     <a href="#company">Компания</a>
+    <a href="#dokumenty" data-docs class="nav-docs">Документы</a>
     <a href="#contacts">Контакты</a>
   </nav>
   <a class="btn btn-solid bar-cta bar-pick" href="#kvartiry-vse" data-catalog="all">Подобрать квартиру</a>
@@ -257,6 +258,7 @@
         <i class="rule" data-in></i>
         <p class="lead" data-in>Застройщик квартала — ООО «Специализированный застройщик „АЛЬТА“», Луганск. Компания входит в группу компаний Альта.</p>
         <div class="companies" id="companies" data-in></div>
+        <button class="kv-3d dc-go" type="button" data-docs data-in><span><b>Документы застройщика</b>Проектная декларация, разрешения, сведения о компании</span><i></i></button>
       </div>
     </div>
   </div>
@@ -280,6 +282,7 @@
     <footer class="foot" data-in>
       <img src="assets/img/logo-ivory.png" alt="ГК Альта" width="86" height="50">
       <p>Изображения и видео на сайте — предварительные визуализации; внешний вид домов, благоустройство и интерьеры могут отличаться. Площади и количество помещений приведены по проектным материалам и могут уточняться. Информация не является публичной офертой.</p>
+      <p class="foot-docs" id="footDocs"></p>
       <p class="foot-c">© 2026 ГК Альта</p>
     </footer>
   </div>
@@ -329,6 +332,15 @@
     </div>
   </div>
   <div class="ch-pick" id="chPick" aria-live="polite"></div>
+</div>
+
+<!-- Документы -->
+<div class="docs" id="docs" role="dialog" aria-modal="true" aria-labelledby="docsTitle" aria-hidden="true" inert>
+  <header class="docs-top">
+    <h2 class="docs-title" id="docsTitle" tabindex="-1">Документы</h2>
+    <button class="btn btn-glass docs-x" id="docsClose" type="button">Закрыть</button>
+  </header>
+  <div class="docs-body"><div class="docs-in" id="docsBody"></div></div>
 </div>
 
 <!-- Выбор квартиры в 3D -->
@@ -429,17 +441,18 @@
   <div class="lightbox-scroll"><img id="lightboxImg" alt=""></div>
 </dialog>
 
-<script src="assets/js/data.js?v=20261112h"></script>
-<script src="assets/js/site.js?v=20261112h"></script>
-<script src="assets/js/three.min.js?v=20261112h" defer></script>
-<script src="assets/js/ground.js?v=20261112h" defer></script>
-<script src="assets/js/genplan3d.js?v=20261112h" defer></script>
-<script src="assets/js/floors.js?v=20261112h" defer></script>
-<script src="assets/js/picker3d.js?v=20261112h" defer></script>
-<script src="assets/js/tour.js?v=20261112h" defer></script>
-<script src="assets/js/walk-data.js?v=20261112h" defer></script>
-<script src="assets/js/walk3d.js?v=20261112h" defer></script>
-<script src="assets/js/catalog.js?v=20261112h" defer></script>
-<script src="assets/js/chooser.js?v=20261112h" defer></script>
+<script src="assets/js/data.js?v=20261112i"></script>
+<script src="assets/js/site.js?v=20261112i"></script>
+<script src="assets/js/three.min.js?v=20261112i" defer></script>
+<script src="assets/js/ground.js?v=20261112i" defer></script>
+<script src="assets/js/genplan3d.js?v=20261112i" defer></script>
+<script src="assets/js/floors.js?v=20261112i" defer></script>
+<script src="assets/js/picker3d.js?v=20261112i" defer></script>
+<script src="assets/js/tour.js?v=20261112i" defer></script>
+<script src="assets/js/walk-data.js?v=20261112i" defer></script>
+<script src="assets/js/walk3d.js?v=20261112i" defer></script>
+<script src="assets/js/catalog.js?v=20261112i" defer></script>
+<script src="assets/js/chooser.js?v=20261112i" defer></script>
+<script src="assets/js/docs.js?v=20261112i" defer></script>
 </body>
 </html>

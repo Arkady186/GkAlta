@@ -209,7 +209,7 @@
     var n = SC[idx(id) + 1];
     body.classList.toggle('is-last', !n);
     nextLabel.textContent = n ? n.name : '';
-    if (!M) try { history.replaceState(null, '', id === 'top' ? location.pathname + location.search : '#' + id); } catch (e) {}
+    if (!M && !modalOpen()) try { history.replaceState(null, '', id === 'top' ? location.pathname + location.search : '#' + id); } catch (e) {}
     window.dispatchEvent(new CustomEvent('alta:view', { detail: id }));
   }
 
@@ -280,7 +280,7 @@
     return false;
   }
 
-  function modalOpen() { var c = body.classList; return c.contains('picker-open') || c.contains('cat-open') || c.contains('walk-open'); }
+  function modalOpen() { var c = body.classList; return c.contains('picker-open') || c.contains('cat-open') || c.contains('walk-open') || c.contains('ch-open') || c.contains('docs-open') || c.contains('tour-open'); }
   var acc = 0, lastWheel = 0, blocked = false;
   window.addEventListener('wheel', function (ev) {
     if (M || lb.open || modalOpen()) return;
