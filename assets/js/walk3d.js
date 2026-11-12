@@ -26,7 +26,7 @@
       var im = new Image();
       im.onload = function () { t.image = im; t.needsUpdate = true; res(); };
       im.onerror = function () { res(); };
-      im.src = 'assets/tex/' + name;
+      im.src = 'assets/tex/' + name + '?v=20261112e';                    // версия: обновлённые текстуры не берутся из старого кэша
     }));
     return t;
   }
@@ -38,166 +38,380 @@
   }
   function mats() {
     var S = function (o) { return new T.MeshStandardMaterial(o); };
-    M.wall = S({ color: 0xe9e3d8, roughness: 0.95 });
-    M.ceil = S({ color: 0xf7f5f0, roughness: 1, side: T.DoubleSide, emissive: 0x77726a });
-    var pq = img('parquet.jpg'); M.parquet = S({ map: pq, roughness: 0.62 });
-    var tl = img('tile.jpg'); M.tile = S({ map: tl, roughness: 0.35 });
-    var tg = img('tileg.jpg'); M.tileg = S({ map: tg, roughness: 0.5 });
+    var C = function (hex, r, extra) { var o = { color: hex, roughness: r == null ? 0.8 : r }; for (var k in extra) o[k] = extra[k]; return S(o); };
+    // отделка: тёплый минимализм — светлый дуб, микроцемент/мрамор, тёплые оттенки стен
+    M.wall = C(0xeee9e2, 0.95);
+    M.ceil = S({ color: 0xf8f6f2, roughness: 1, side: T.DoubleSide, emissive: 0x7a766e });
+    M.parquet = S({ map: img('oak-herringbone.jpg', [1.2 / 0.8485, 1.2 / 0.8485]), roughness: 0.55 });
+    M.tile = S({ map: img('porcelain-light.jpg'), roughness: 0.28 });
+    M.tileb = S({ map: img('porcelain-bath.jpg'), roughness: 0.32 });
+    M.tileg = S({ map: img('deck.jpg'), roughness: 0.6 });
     M.glass = new T.MeshPhysicalMaterial({ color: 0xdfeef3, transparent: true, opacity: 0.16, roughness: 0.05, metalness: 0.1, side: T.DoubleSide, depthWrite: false });
-    M.frame = S({ color: 0x5a4a35, roughness: 0.5, metalness: 0.35 });
-    M.sill = S({ color: 0xe8e1d2, roughness: 0.4 });
-    M.oak = S({ color: 0xb59c7c, roughness: 0.6 });
-    M.oakd = S({ color: 0x5f4a38, roughness: 0.55 });
-    M.ivory = S({ color: 0xeee6d6, roughness: 0.85 });
-    M.boucle = S({ map: img('boucle.png', [3, 3]), roughness: 1 });
-    M.velvet = S({ map: img('velvet.png', [3, 3]), roughness: 0.8 });
+    M.sill = C(0xeee9e1, 0.35);
+    // мебель
+    M.oak = S({ map: img('oak.jpg'), roughness: 0.55 });
+    M.walnut = S({ map: img('walnut.jpg'), roughness: 0.5 });
+    M.lacq = C(0xefebe4, 0.45);                    // белые матовые фасады
+    M.greige = C(0xb9ad9d, 0.6);                   // нижние фасады кухни
+    M.sage = C(0x8f9a86, 0.6);
+    M.boucle = S({ map: img('boucle.png', [2, 2]), roughness: 1, color: 0xf4efe6 });
+    M.fabric = S({ map: img('linen.png', [2, 2]), roughness: 1, color: 0xc9bba8 });   // обивка изголовья, стулья
+    M.velvet = S({ map: img('linen.png', [2, 2]), roughness: 0.7, color: 0x8f9b84 });
+    M.terra = S({ map: img('linen.png', [2, 2]), roughness: 0.9, color: 0xc7835f });
     M.linen = S({ map: img('linen.png', [3, 3]), roughness: 1 });
-    M.trav = S({ color: 0xd8cbb2, roughness: 0.45 });
-    M.brass = S({ color: 0xc9a96a, roughness: 0.3, metalness: 0.9 });
-    M.white = S({ color: 0xf6f4f0, roughness: 0.25 });
-    M.black = S({ color: 0x15161a, roughness: 0.35, metalness: 0.3 });
-    M.steel = S({ color: 0xc7cbcf, roughness: 0.35, metalness: 0.7 });
-    M.stone = S({ color: 0xd9d1c4, roughness: 0.3 });
-    M.leaf = S({ color: 0x2f5a35, roughness: 0.8 });
+    M.linenW = S({ map: img('linen.png', [3, 3]), roughness: 1, color: 0xfbf8f3 });
+    M.kidsBl = S({ map: img('linen.png', [3, 3]), roughness: 1, color: 0xb9cbd6 });
+    M.marbleT = S({ map: img('marble-counter.jpg'), roughness: 0.18 });
+    M.marbleW = S({ map: img('marble-counter.jpg'), roughness: 0.2 });
+    M.trav = C(0xd8cbb2, 0.4);
+    M.brass = S({ color: 0xc9a96a, roughness: 0.28, metalness: 0.9 });
+    M.black = S({ color: 0x1b1b1d, roughness: 0.4, metalness: 0.55 });
+    M.screen = S({ color: 0x0b0c0f, roughness: 0.12, metalness: 0.4 });
+    M.ceramic = S({ color: 0xf7f6f3, roughness: 0.12 });
+    M.white = M.ceramic;
+    M.steel = S({ color: 0xc7cbcf, roughness: 0.3, metalness: 0.8 });
+    M.leaf = C(0x355f3a, 0.75); M.leaf2 = C(0x4d7744, 0.7);
+    M.pot = C(0xe9e3d9, 0.7); M.potd = C(0x3a3633, 0.6);
     M.rug = S({ map: img('rug.jpg'), roughness: 1 });
-    M.book = [0x6d2f2f, 0x1f4a3a, 0xc9a96a, 0x2c3e55, 0xd8cbb2].map(function (c) { return S({ color: c, roughness: 0.8 }); });
-    M.door = S({ color: 0x4a3a2c, roughness: 0.5 });
-    M.water = S({ color: 0xbfd6dc, roughness: 0.1, metalness: 0.1 });
-    M.mirror = S({ color: 0xdfe6e8, roughness: 0.03, metalness: 1 });
-    M.leaf2 = S({ color: 0x46703f, roughness: 0.7 });
-    M.trim = S({ color: 0xf4f1ea, roughness: 0.55 });
-    M.pvc = S({ color: 0xf5f4f0, roughness: 0.35 });
-    M.doorglass = new T.MeshPhysicalMaterial({ color: 0xd8e6ea, transparent: true, opacity: 0.09, roughness: 0.15, metalness: 0, side: T.DoubleSide, depthWrite: false });
-    M.doorleaf = S({ color: 0xefeae1, roughness: 0.5 });
-    M.whitem = S({ color: 0xf0ece4, roughness: 0.7 });
+    M.book = [0x8a5a44, 0x55634f, 0xc9a96a, 0x3f4a59, 0xd8cbb2, 0xe8e2d6].map(function (c) { return C(c, 0.8); });
+    M.water = C(0xd9e8ec, 0.1);
+    M.mirror = S({ color: 0xf1f4f5, roughness: 0.06, metalness: 0.85, envMapIntensity: 1.6 });
+    M.shade = S({ color: 0xfff6e8, emissive: 0xffe6c0, emissiveIntensity: 0.9, roughness: 0.6 });
+    M.glow = S({ color: 0xffffff, emissive: 0xfff0d8, emissiveIntensity: 2.2 });
+    M.lamp = new T.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff1dc, emissiveIntensity: 1.8, roughness: 0.4 });
+    M.trim = C(0xf4f1ea, 0.55);
+    M.pvc = C(0xf5f4f0, 0.35);
+    M.door = C(0x2e2a27, 0.45);
+    M.doorglass = new T.MeshPhysicalMaterial({ color: 0xd8e6ea, transparent: true, opacity: 0.1, roughness: 0.1, metalness: 0, side: T.DoubleSide, depthWrite: false });
+    M.profile = S({ color: 0x1e1e20, roughness: 0.35, metalness: 0.6 });   // чёрный алюминиевый профиль дверей
     M.curtain = S({ map: img('curtain.png'), roughness: 1, color: 0xf2ebdf });
-    M.lamp = new T.MeshStandardMaterial({ color: 0xffffff, emissive: 0xfff1dc, emissiveIntensity: 1.6, roughness: 0.4 });
+    // акцентные стены по комнатам
+    M.accent = {
+      bedroom: C(0x8a8c7a, 0.95), kids: C(0xd7b9a2, 0.95), living: C(0xcbbfae, 0.95), kitliv: C(0xcbbfae, 0.95),
+      studio: C(0xa8a58f, 0.95), hall: C(0xd2c7b8, 0.95), kitchen: C(0xd2c7b8, 0.95)
+    };
     M.wallAO = data(1, 256, function (i) {                  // строка 0 — пол, 255 — потолок
       var v = i / 255, k = v < 0.06 ? 205 + (250 - 205) * v / 0.06 : v < 0.88 ? 250 + 5 * (v - 0.06) / 0.82 : v < 0.96 ? 255 - 20 * (v - 0.88) / 0.08 : 235 - 45 * (v - 0.96) / 0.04;
       return Math.round(k);
     });
     M.wallAO.channel = 1;
-    var tw = img('tilewall.jpg', [1 / 1.2, 1 / 1.2]);
-    M.tilewall = S({ map: tw, roughness: 0.22, aoMap: M.wallAO });
+    M.tilewall = S({ map: img('marble-wall.jpg', [1 / 1.2, 1 / 1.2]), roughness: 0.18, aoMap: M.wallAO });
     M.sky = new T.MeshBasicMaterial({ map: img('sky.jpg'), side: T.BackSide, fog: false });
-    M.ground = S({ color: 0x7c8668, roughness: 1 });
-    for (var k in M) if (M[k] && M[k].isMeshStandardMaterial) M[k].envMapIntensity = { glass: 1, white: 0.9, brass: 1, steel: 1, black: 0.8 }[k] || 0.6;
+    M.ground = C(0x7c8668, 1);
+    var gloss = { glass: 1, ceramic: 1, brass: 1, steel: 1, black: 0.9, mirror: 1.8, marbleT: 1, marbleW: 1, tilewall: 1, screen: 1, tile: 0.8, tileb: 0.8 };
+    (function walk(o, key) {
+      for (var k in o) {
+        var v = o[k];
+        if (v && v.isMeshStandardMaterial) v.envMapIntensity = gloss[key || k] || 0.6;
+        else if (v && typeof v === 'object' && !v.isMaterial && !v.isTexture) walk(v, key || k);
+      }
+    })(M);
   }
 
-  var BOX, LAMP, SKYGEO, GROUNDGEO, LEAF;
-  function box(w, h, d, m, x, y, z, g) {
-    var me = new T.Mesh(BOX, m); me.scale.set(w, h, d); me.position.set(x || 0, (y || 0) + h / 2, z || 0); (g || this).add(me); return me;
+  /* ───────── примитивы ───────── */
+  var BOX, LAMP, SKYGEO, GROUNDGEO, LEAF, GC = {};
+  function keep(g) { g.userData.keep = true; return g; }
+  // скруглённый параллелепипед (порт RoundedBoxGeometry), кэш по размерам
+  function rboxG(w, h, d, r) {
+    r = Math.max(0.002, Math.min(r, w / 2 - 0.001, h / 2 - 0.001, d / 2 - 0.001));
+    var key = 'rb' + w.toFixed(3) + '|' + h.toFixed(3) + '|' + d.toFixed(3) + '|' + r.toFixed(3);
+    if (GC[key]) return GC[key];
+    var n = 5, g = new T.BoxGeometry(1, 1, 1, n, n, n).toNonIndexed();
+    var p = g.attributes.position.array, nr = g.attributes.normal.array, hs = 0.5 / n;
+    var bx = w / 2 - r, by = h / 2 - r, bz = d / 2 - r;
+    for (var i = 0; i < p.length; i += 3) {
+      var x = p[i], y = p[i + 1], z = p[i + 2];
+      var nx = x - Math.sign(x) * hs, ny = y - Math.sign(y) * hs, nz = z - Math.sign(z) * hs;
+      var l = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1; nx /= l; ny /= l; nz /= l;
+      p[i] = bx * Math.sign(x) + nx * r; p[i + 1] = by * Math.sign(y) + ny * r; p[i + 2] = bz * Math.sign(z) + nz * r;
+      nr[i] = nx; nr[i + 1] = ny; nr[i + 2] = nz;
+    }
+    g.computeBoundingSphere();
+    return (GC[key] = keep(g));
   }
-  function cyl(rt, rb, h, m, x, y, z, g, seg) {
-    var me = new T.Mesh(new T.CylinderGeometry(rt, rb, h, seg || 20), m); me.position.set(x || 0, (y || 0) + h / 2, z || 0); g.add(me); return me;
+  function cylG(rt, rb, h, seg) {
+    var key = 'cy' + rt.toFixed(3) + '|' + rb.toFixed(3) + '|' + h.toFixed(3) + '|' + (seg || 24);
+    return GC[key] || (GC[key] = keep(new T.CylinderGeometry(rt, rb, h, seg || 24)));
+  }
+  // плита со скруглёнными в плане углами (столешницы-«пилюли», круглые столы)
+  function slabG(w, d, h, r) {
+    r = Math.min(r, w / 2, d / 2);
+    var key = 'sl' + w.toFixed(3) + '|' + d.toFixed(3) + '|' + h.toFixed(3) + '|' + r.toFixed(3);
+    if (GC[key]) return GC[key];
+    var s = new T.Shape(), x = -w / 2, y = -d / 2;
+    s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0, false);
+    s.lineTo(x + w, y + d - r); s.absarc(x + w - r, y + d - r, r, 0, Math.PI / 2, false);
+    s.lineTo(x + r, y + d); s.absarc(x + r, y + d - r, r, Math.PI / 2, Math.PI, false);
+    s.lineTo(x, y + r); s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5, false);
+    var g = new T.ExtrudeGeometry(s, { depth: h, bevelEnabled: true, bevelThickness: Math.min(0.006, h / 4), bevelSize: Math.min(0.006, h / 4), bevelSegments: 2, curveSegments: 18 });
+    g.rotateX(-Math.PI / 2); g.translate(0, 0, 0);
+    return (GC[key] = keep(g));
+  }
+  function add(g, geo, m, x, y, z) { var me = new T.Mesh(geo, m); me.position.set(x || 0, y || 0, z || 0); g.add(me); return me; }
+  function box(w, h, d, m, x, y, z, g) { var me = new T.Mesh(BOX, m); me.scale.set(w, h, d); me.position.set(x || 0, (y || 0) + h / 2, z || 0); g.add(me); return me; }
+  function rb(w, h, d, r, m, x, y, z, g) { return add(g, rboxG(w, h, d, r), m, x, (y || 0) + h / 2, z); }
+  function cyl(rt, rbt, h, m, x, y, z, g, seg) { return add(g, cylG(rt, rbt, h, seg), m, x, (y || 0) + h / 2, z); }
+  function slab(w, d, h, r, m, x, y, z, g) { return add(g, slabG(w, d, h, r), m, x, y, z); }
+  function legs(g, w, d, h, inset, m, t) {
+    t = t || 0.03;
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (p) { box(t, h, t, m || M.black, p[0] * (w / 2 - inset), 0, p[1] * (d / 2 - inset), g); });
+  }
+  function lampTable(g, x, z, y) {
+    cyl(0.05, 0.07, 0.02, M.brass, x, y, z, g); cyl(0.008, 0.008, 0.3, M.brass, x, y + 0.02, z, g);
+    cyl(0.11, 0.15, 0.17, M.shade, x, y + 0.27, z, g, 28);
   }
 
   /* ───────── мебель (локально: ширина по x, глубина по z, спина в −z) ───────── */
   var F = {
     bed: function (g, w, d) {
-      box(w, 0.28, d, M.oak, 0, 0, 0, g);
-      box(w - 0.06, 0.24, d - 0.12, M.linen, 0, 0.28, 0.04, g);
-      box(w - 0.02, 0.06, d * 0.62, M.boucle, 0, 0.5, d * 0.17, g);
-      for (var s = -1; s <= 1; s += 2) box(w / 2 - 0.12, 0.13, 0.36, M.linen, s * w / 4, 0.52, -d / 2 + 0.32, g);
-      box(w + 0.1, 1.1, 0.1, M.velvet, 0, 0, -d / 2 + 0.05, g);
+      box(w - 0.14, 0.06, d - 0.24, M.black, 0, 0, 0.04, g);                          // цоколь в тени
+      rb(w, 0.28, d - 0.06, 0.05, M.fabric, 0, 0.06, 0.03, g);                         // мягкое основание
+      rb(w + 0.06, 1.0, 0.12, 0.05, M.fabric, 0, 0.06, -d / 2 + 0.06, g);              // изголовье
+      for (var k = -2; k <= 2; k++) box(0.006, 0.82, 0.004, M.black, k * (w + 0.06) / 5, 0.16, -d / 2 + 0.122, g);
+      rb(w - 0.1, 0.2, d - 0.22, 0.07, M.linenW, 0, 0.33, 0.06, g);                     // матрас
+      rb(w - 0.02, 0.07, d * 0.6, 0.035, M.linen, 0, 0.5, d * 0.19, g);                // одеяло
+      rb(w + 0.02, 0.05, 0.5, 0.025, M.velvet, 0, 0.555, d / 2 - 0.42, g);             // плед
+      for (var s = -1; s <= 1; s += 2) {
+        var p = rb(w / 2 - 0.12, 0.15, 0.4, 0.07, M.linenW, s * (w / 4 - 0.01), 0.52, -d / 2 + 0.36, g); p.rotation.x = -0.25;
+        var q = rb(0.4, 0.32, 0.1, 0.05, s < 0 ? M.velvet : M.terra, s * 0.24, 0.53, -d / 2 + 0.55, g); q.rotation.x = -0.35; q.rotation.z = s * 0.06;
+      }
     },
-    bed1: function (g, w, d) { F.bed(g, w, d); },
+    bed1: function (g, w, d) {                                                           // детская: боком к стене, W=2.0 вдоль стены
+      rb(w, 0.3, d, 0.03, M.oak, 0, 0.04, 0, g); legs(g, w, d, 0.05, 0.08, M.oak, 0.05);
+      rb(w - 0.06, 0.18, d - 0.06, 0.05, M.linenW, 0, 0.3, 0, g);
+      rb(w * 0.66, 0.06, d - 0.01, 0.03, M.kidsBl, w * 0.16, 0.46, 0.005, g);
+      var p = rb(0.42, 0.14, d - 0.25, 0.06, M.linenW, -w / 2 + 0.27, 0.46, 0, g);
+      rb(w, 0.55, 0.05, 0.02, M.oak, 0, 0.3, -d / 2 + 0.025, g);                        // спинка у стены
+      rb(0.34, 0.3, 0.1, 0.05, M.terra, w / 2 - 0.35, 0.5, -d / 2 + 0.12, g).rotation.x = -0.3;
+    },
     nightstand: function (g, w, d) {
-      box(w, 0.5, d, M.oak, 0, 0, 0, g);
-      cyl(0.06, 0.08, 0.32, M.brass, 0, 0.5, 0, g);
-      cyl(0.11, 0.16, 0.18, M.ivory, 0, 0.82, 0, g);
+      rb(w, 0.38, d, 0.02, M.walnut, 0, 0.16, 0, g); legs(g, w, d, 0.16, 0.05, M.black, 0.02);
+      box(w - 0.04, 0.004, 0.004, M.black, 0, 0.35, d / 2, g);
+      lampTable(g, -w * 0.15, -0.02, 0.54);
+      rb(0.14, 0.03, 0.2, 0.01, M.book[2], w * 0.18, 0.54, 0.04, g);
     },
-    wardrobe: function (g, w, d) {
-      box(w, 0.08, d - 0.04, M.oakd, 0, 0, -0.02, g);
-      box(w, 2.32, d, M.whitem, 0, 0.08, 0, g);
-      var n = Math.max(2, Math.round(w / 0.5));
-      for (var i = 1; i < n; i++) box(0.006, 2.3, 0.004, M.oakd, -w / 2 + i * w / n, 0.09, d / 2 + 0.001, g);
-      for (var j = 0; j < n; j++) box(0.014, 0.42, 0.02, M.brass, -w / 2 + (j + 0.5) * w / n + (j % 2 ? -0.38 : 0.38) * w / n, 0.95, d / 2 + 0.012, g);
+    wardrobe: function (g, w, d) {                                                      // встроенный, до потолка
+      var h = H - 0.04;
+      box(w - 0.04, 0.08, d - 0.06, M.black, 0, 0, -0.02, g);
+      box(w, h - 0.08, d, M.lacq, 0, 0.08, 0, g);
+      var n = Math.max(2, Math.round(w / 0.55));
+      for (var i = 1; i < n; i++) box(0.006, h - 0.1, 0.004, M.black, -w / 2 + i * w / n, 0.09, d / 2 + 0.001, g);
+      for (var j = 0; j < n; j++) { var x = -w / 2 + (j + 0.5) * w / n + ((j % 2) ? -0.5 : 0.5) * (w / n - 0.08); box(0.012, 0.6, 0.02, M.brass, x, 0.85, d / 2 + 0.01, g); }
     },
     sofa: function (g, w, d) {
-      box(w, 0.4, d, M.boucle, 0, 0.05, 0, g);
-      box(w, 0.48, 0.24, M.boucle, 0, 0.42, -d / 2 + 0.12, g);
-      box(0.2, 0.28, d, M.boucle, -w / 2 + 0.1, 0.42, 0, g); box(0.2, 0.28, d, M.boucle, w / 2 - 0.1, 0.42, 0, g);
-      for (var i = 0; i < 2; i++) box(w / 2 - 0.22, 0.14, d - 0.32, M.boucle, (i ? 1 : -1) * (w / 4 - 0.05), 0.45, 0.08, g);
-      box(0.4, 0.4, 0.12, M.velvet, -w / 2 + 0.45, 0.55, -d / 2 + 0.3, g).rotation.z = 0.15;
-      box(w - 0.1, 0.05, d - 0.1, M.oakd, 0, 0, 0, g);
+      var n = w > 2.2 ? 3 : 2, aw = 0.18;
+      box(w - 0.1, 0.06, d - 0.12, M.black, 0, 0, 0, g);
+      rb(w, 0.26, d, 0.06, M.boucle, 0, 0.06, 0, g);
+      for (var i = 0; i < n; i++) {
+        var cw = (w - 2 * aw) / n, cx = -w / 2 + aw + (i + 0.5) * cw;
+        rb(cw - 0.015, 0.16, d - 0.28, 0.07, M.boucle, cx, 0.3, 0.12, g);
+        var b = rb(cw - 0.03, 0.42, 0.24, 0.1, M.boucle, cx, 0.34, -d / 2 + 0.17, g); b.rotation.x = -0.1;
+      }
+      rb(aw, 0.38, d, 0.08, M.boucle, -w / 2 + aw / 2, 0.06, 0, g); rb(aw, 0.38, d, 0.08, M.boucle, w / 2 - aw / 2, 0.06, 0, g);
+      var p1 = rb(0.44, 0.42, 0.13, 0.06, M.velvet, -w / 2 + aw + 0.3, 0.44, -d / 2 + 0.36, g); p1.rotation.set(-0.25, 0, 0.08);
+      var p2 = rb(0.4, 0.38, 0.12, 0.06, M.terra, w / 2 - aw - 0.28, 0.44, -d / 2 + 0.36, g); p2.rotation.set(-0.25, 0, -0.1);
+      var p3 = rb(0.38, 0.36, 0.12, 0.06, M.linen, w / 2 - aw - 0.6, 0.44, -d / 2 + 0.38, g); p3.rotation.set(-0.2, 0, 0.12);
     },
     armchair: function (g, w, d) {
-      box(w, 0.4, d, M.velvet, 0, 0.05, 0, g); box(w, 0.42, 0.18, M.velvet, 0, 0.45, -d / 2 + 0.09, g);
-      box(0.14, 0.22, d, M.velvet, -w / 2 + 0.07, 0.45, 0, g); box(0.14, 0.22, d, M.velvet, w / 2 - 0.07, 0.45, 0, g);
+      legs(g, w, d, 0.12, 0.08, M.walnut, 0.035);
+      rb(w, 0.24, d, 0.08, M.velvet, 0, 0.12, 0, g);
+      rb(w - 0.2, 0.14, d - 0.24, 0.06, M.velvet, 0, 0.34, 0.08, g);
+      var b = rb(w, 0.46, 0.18, 0.09, M.velvet, 0, 0.32, -d / 2 + 0.09, g); b.rotation.x = -0.12;
+      rb(0.13, 0.26, d - 0.06, 0.06, M.velvet, -w / 2 + 0.065, 0.32, 0.03, g); rb(0.13, 0.26, d - 0.06, 0.06, M.velvet, w / 2 - 0.065, 0.32, 0.03, g);
     },
-    coffee: function (g, w, d) { box(w, 0.06, d, M.trav, 0, 0.32, 0, g); box(w * 0.5, 0.32, d * 0.5, M.trav, 0, 0, 0, g); box(0.18, 0.04, 0.24, M.book[1], 0.15, 0.38, 0, g); },
-    rug: function (g, w, d) { var p = new T.Mesh(new T.PlaneGeometry(w, d), M.rug); p.rotation.x = -Math.PI / 2; p.position.y = 0.008; g.add(p); },
-    rugr: function (g, w) { var p = new T.Mesh(new T.CircleGeometry(w / 2, 48), M.rug); p.rotation.x = -Math.PI / 2; p.position.y = 0.008; g.add(p); },
-    tv: function (g, w, d) {
-      box(w, 0.42, d, M.oak, 0, 0.12, 0, g); box(w, 0.12, d - 0.04, M.oakd, 0, 0, 0, g);
-      box(Math.min(1.3, w - 0.2), 0.74, 0.04, M.black, 0, 1.05, -d / 2 + 0.02, g);
+    coffee: function (g, w, d) {
+      slab(w, d, 0.035, d / 2, M.trav, 0, 0.36, 0, g);
+      slab(w * 0.55, d * 0.55, 0.36, d * 0.27, M.walnut, 0, 0, 0, g);
+      rb(0.22, 0.04, 0.28, 0.01, M.book[3], w * 0.18, 0.4, 0.02, g); rb(0.2, 0.03, 0.26, 0.01, M.book[4], w * 0.18, 0.44, 0.02, g);
+      cyl(0.05, 0.035, 0.16, M.potd, -w * 0.22, 0.4, -0.02, g);
     },
+    console: function (g, w, d) {                                                       // ТВ-тумба «в парении» + ТВ на стене
+      rb(w, 0.36, d, 0.015, M.walnut, 0, 0.2, 0, g);
+      for (var i = 1; i < 3; i++) box(0.005, 0.32, 0.004, M.black, -w / 2 + i * w / 3, 0.22, d / 2 + 0.001, g);
+      var tw = Math.min(1.45, w - 0.2);
+      box(tw, tw * 0.57, 0.035, M.screen, 0, 0.98, -d / 2 + 0.03, g);
+      box(tw * 0.6, 0.06, 0.08, M.black, 0, 0.56, -d / 2 + 0.12, g);
+      cyl(0.07, 0.05, 0.22, M.pot, w / 2 - 0.18, 0.56, 0, g); cyl(0.004, 0.004, 0.35, M.walnut, w / 2 - 0.18, 0.78, 0, g);
+    },
+    floorlamp: function (g, w) {
+      cyl(0.15, 0.16, 0.025, M.marbleT, 0, 0, 0, g, 32); cyl(0.012, 0.012, 1.5, M.black, 0, 0.02, 0, g);
+      cyl(0.13, 0.2, 0.26, M.shade, 0, 1.45, 0, g, 32);
+    },
+    rug: function (g, w, d) { var p = new T.Mesh(BOX, M.rug); p.scale.set(w, 0.012, d); p.position.y = 0.006; g.add(p); },
+    rugr: function (g, w) { add(g, cylG(w / 2, w / 2, 0.012, 48), M.rug, 0, 0.006, 0); },
     shelf: function (g, w, d) {
-      box(0.03, 1.9, d, M.oak, -w / 2, 0, 0, g); box(0.03, 1.9, d, M.oak, w / 2, 0, 0, g);
+      var h = 2.0;
+      box(0.025, h, d, M.walnut, -w / 2 + 0.0125, 0, 0, g); box(0.025, h, d, M.walnut, w / 2 - 0.0125, 0, 0, g);
+      box(w, h, 0.012, M.walnut, 0, 0, -d / 2 + 0.006, g);
       for (var i = 0; i < 5; i++) {
-        box(w, 0.025, d, M.oak, 0, i * 0.46, 0, g);
-        if (i < 4) for (var b = 0; b < 6; b++) if (rnd() < 0.7) box(0.035 + rnd() * 0.03, 0.22 + rnd() * 0.08, d * 0.8, M.book[(b + i) % 5], -w / 2 + 0.08 + b * (w - 0.16) / 6, i * 0.46 + 0.025, 0, g);
+        var y = 0.05 + i * 0.45; box(w, 0.025, d, M.walnut, 0, y, 0, g);
+        if (i === 4) continue;
+        var x = -w / 2 + 0.06;
+        while (x < w / 2 - 0.12) {
+          var r = rnd();
+          if (r < 0.55) { var bw = 0.025 + rnd() * 0.03, bh = 0.2 + rnd() * 0.12; box(bw, bh, d * 0.75, M.book[(rnd() * 6) | 0], x + bw / 2, y + 0.025, 0, g); x += bw + 0.003; }
+          else if (r < 0.7) { cyl(0.05, 0.04, 0.16 + rnd() * 0.08, rnd() < 0.5 ? M.pot : M.potd, x + 0.06, y + 0.025, 0, g); x += 0.14; }
+          else x += 0.08;
+        }
       }
     },
     plant: function (g, w) {
-      cyl(w * 0.32, w * 0.26, 0.4, M.trav, 0, 0, 0, g);
+      cyl(w * 0.34, w * 0.28, 0.42, M.pot, 0, 0, 0, g, 28);
+      cyl(0.01, 0.014, 0.7, M.walnut, 0, 0.4, 0, g);
       for (var i = 0; i < 26; i++) {
-        var s = new T.Mesh(LEAF, i % 3 ? M.leaf : M.leaf2), a = rnd() * 6.28, rr = 0.05 + rnd() * 0.2, y = 0.75 + rnd() * 0.75;
+        var s = new T.Mesh(LEAF, i % 3 ? M.leaf : M.leaf2), a = rnd() * 6.28, rr = 0.04 + rnd() * 0.2, y = 0.75 + rnd() * 0.75;
         s.scale.set(0.045 + rnd() * 0.025, 0.13 + rnd() * 0.07, 0.008); s.position.set(Math.cos(a) * rr, y, Math.sin(a) * rr);
         s.rotation.set((rnd() - 0.5) * 0.9, a, (rnd() - 0.5) * 1.2); g.add(s);
       }
-      cyl(0.01, 0.015, 0.7, M.oakd, 0, 0.4, 0, g);
     },
-    counter: function (g, w, d) {
-      box(w, 0.1, d - 0.05, M.oakd, 0, 0, -0.02, g);
-      box(w, 0.76, d - 0.02, M.ivory, 0, 0.1, -0.01, g);
+    counter: function (g, w, d, ex) {                                                   // кухня: нижние фасады, мраморная столешница и фартук, верхние шкафы
+      ex = ex || {};
+      if (ex.col && w >= 1.7) {                                                         // встроенный холодильник-колонна у торца
+        var cw = 0.62, fg = new T.Group(), rg = new T.Group();
+        fg.position.x = ex.col * (w / 2 - cw / 2); g.add(fg); F.fridge(fg, cw, d);
+        rg.position.x = -ex.col * cw / 2; g.add(rg);
+        F.counter(rg, w - cw, d, { upper: ex.upper, plain: ex.plain, side: -ex.col });
+        return;
+      }
+      box(w - 0.02, 0.1, d - 0.08, M.black, 0, 0, -0.03, g);
+      box(w, 0.76, d - 0.02, M.greige, 0, 0.1, -0.01, g);
       var n = Math.max(2, Math.round(w / 0.6));
-      for (var i = 1; i < n; i++) box(0.006, 0.74, 0.005, M.oakd, -w / 2 + i * w / n, 0.11, d / 2 - 0.02, g);
-      box(w + 0.02, 0.04, d + 0.02, M.stone, 0, 0.86, 0, g);
-      box(0.56, 0.008, 0.48, M.black, -w / 2 + 0.6, 0.9, 0.02, g);                  // варочная панель
-      box(0.5, 0.01, 0.4, M.steel, Math.min(w / 2 - 0.4, 0.5), 0.9, 0.02, g);       // мойка
-      cyl(0.015, 0.015, 0.3, M.brass, Math.min(w / 2 - 0.4, 0.5), 0.9, -d / 2 + 0.1, g);
-      box(w, 0.72, 0.34, M.whitem, 0, 1.45, -d / 2 + 0.17, g);                       // верхние шкафы
-      box(w, 0.02, 0.3, M.oak, 0, 1.43, -d / 2 + 0.15, g);
-      box(w, 0.55, 0.01, M.stone, 0, 0.9, -d / 2 + 0.005, g);                         // фартук
+      for (var i = 1; i < n; i++) box(0.005, 0.74, 0.004, M.black, -w / 2 + i * w / n, 0.11, d / 2 - 0.018, g);
+      box(w, 0.004, 0.004, M.black, 0, 0.62, d / 2 - 0.018, g);
+      box(w + 0.01, 0.03, d + 0.01, M.marbleT, 0, 0.86, 0, g);
+      box(w, 0.6, 0.012, M.marbleT, 0, 0.89, -d / 2 + 0.006, g);                        // фартук
+      if (!ex.plain) {
+        var hs = ex.side > 0 ? 1 : -1;                                                  // варочная — дальше от холодильника
+        box(0.58, 0.006, 0.5, M.screen, hs * (w / 2 - 0.45), 0.89, 0.02, g);            // варочная
+        var sx = -hs * Math.min(w / 2 - 0.45, 0.55);
+        box(0.5, 0.012, 0.42, M.black, sx, 0.886, 0.02, g);                             // мойка (кварц, чёрная)
+        cyl(0.012, 0.012, 0.3, M.black, sx, 0.89, -d / 2 + 0.08, g); box(0.012, 0.012, 0.18, M.black, sx, 1.18, -d / 2 + 0.16, g);
+      }
+      if (ex.upper !== 0) {
+        box(w, 0.8, 0.34, M.lacq, 0, 1.5, -d / 2 + 0.17, g);
+        for (var j = 1; j < n; j++) box(0.005, 0.78, 0.004, M.black, -w / 2 + j * w / n, 1.51, -d / 2 + 0.341, g);
+        box(w - 0.04, 0.012, 0.02, M.glow, 0, 1.49, -d / 2 + 0.3, g);                   // подсветка столешницы
+      }
     },
-    fridge: function (g, w, d) { box(w, 2.0, d, M.ivory, 0, 0, 0, g); box(0.02, 0.5, 0.03, M.brass, -w / 2 + 0.08, 1.1, d / 2 + 0.015, g); box(w - 0.02, 0.006, 0.01, M.oakd, 0, 1.25, d / 2 + 0.003, g); },
+    fridge: function (g, w, d) {                                                        // колонна под потолок: холодильник за фасадом
+      box(w - 0.02, 0.1, d - 0.08, M.black, 0, 0, -0.03, g);
+      box(w, H - 0.14, d, M.lacq, 0, 0.1, 0, g);
+      box(w, 0.005, 0.004, M.black, 0, 1.25, d / 2 + 0.001, g); box(w, 0.005, 0.004, M.black, 0, 2.05, d / 2 + 0.001, g);
+      box(0.012, 0.55, 0.02, M.brass, -w / 2 + 0.06, 1.35, d / 2 + 0.01, g); box(0.012, 0.25, 0.02, M.brass, -w / 2 + 0.06, 1.75, d / 2 + 0.01, g);
+    },
     table: function (g, w, d) {
-      box(w, 0.04, d, M.oak, 0, 0.72, 0, g);
-      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (p) { box(0.045, 0.72, 0.045, M.oakd, p[0] * (w / 2 - 0.06), 0, p[1] * (d / 2 - 0.06), g); });
-      cyl(0.05, 0.07, 0.22, M.ivory, 0, 0.76, 0, g);
+      if (Math.abs(w - d) < 0.05) {                                                    // круглый на одной ноге
+        slab(w, d, 0.03, w / 2, M.oak, 0, 0.72, 0, g);
+        cyl(0.05, 0.05, 0.7, M.black, 0, 0.02, 0, g); cyl(0.24, 0.26, 0.02, M.black, 0, 0, 0, g, 32);
+      } else {
+        slab(w, d, 0.035, 0.06, M.oak, 0, 0.715, 0, g);
+        [[-1], [1]].forEach(function (s) { box(0.04, 0.7, d - 0.2, M.black, s[0] * (w / 2 - 0.16), 0.01, 0, g); box(0.06, 0.02, d - 0.12, M.black, s[0] * (w / 2 - 0.16), 0, 0, g); });
+      }
+      cyl(0.06, 0.05, 0.16, M.pot, 0.08, 0.75, 0, g); cyl(0.004, 0.004, 0.28, M.walnut, 0.08, 0.91, 0, g);
     },
     chair: function (g, w, d) {
-      box(w, 0.04, d - 0.06, M.oak, 0, 0.44, 0.02, g);
-      box(w, 0.42, 0.04, M.oak, 0, 0.46, -d / 2 + 0.03, g);
-      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (p) { box(0.03, 0.44, 0.03, M.oakd, p[0] * (w / 2 - 0.04), 0, p[1] * (d / 2 - 0.05), g); });
-      box(w - 0.06, 0.03, d - 0.12, M.velvet, 0, 0.48, 0.03, g);
+      legs(g, 0.42, 0.42, 0.44, 0.03, M.black, 0.022);
+      rb(0.46, 0.07, 0.46, 0.03, M.fabric, 0, 0.44, 0.02, g);
+      var b = rb(0.44, 0.32, 0.05, 0.025, M.fabric, 0, 0.52, -0.2, g); b.rotation.x = -0.12;
     },
     desk: function (g, w, d) {
-      box(w, 0.035, d, M.oak, 0, 0.73, 0, g); box(0.04, 0.73, d, M.oakd, -w / 2 + 0.02, 0, 0, g); box(0.04, 0.73, d, M.oakd, w / 2 - 0.02, 0, 0, g);
-      cyl(0.08, 0.1, 0.03, M.brass, w / 2 - 0.2, 0.765, -d / 2 + 0.15, g); cyl(0.01, 0.01, 0.4, M.brass, w / 2 - 0.2, 0.79, -d / 2 + 0.15, g);
-      var c = new T.Group(); F.chair(c, 0.46, 0.5); c.position.z = d / 2 + 0.15; c.rotation.y = Math.PI; g.add(c);
+      slab(w, d, 0.028, 0.02, M.oak, 0, 0.72, 0, g);
+      [[-1], [1]].forEach(function (s) { box(0.03, 0.72, d - 0.08, M.black, s[0] * (w / 2 - 0.04), 0, 0, g); });
+      lampTable(g, w / 2 - 0.18, -d / 2 + 0.14, 0.75);
+      rb(0.32, 0.015, 0.22, 0.008, M.screen, -0.1, 0.75, 0.02, g);
+      cyl(0.04, 0.035, 0.12, M.pot, -w / 2 + 0.12, 0.75, -d / 2 + 0.12, g);
     },
-    bench: function (g, w, d) { box(w, 0.06, d, M.oak, 0, 0.4, 0, g); box(w - 0.1, 0.06, d - 0.06, M.velvet, 0, 0.46, 0, g); box(0.05, 0.4, d - 0.06, M.oakd, -w / 2 + 0.06, 0, 0, g); box(0.05, 0.4, d - 0.06, M.oakd, w / 2 - 0.06, 0, 0, g); box(w, 0.9, 0.03, M.trav, 0, 1.1, -d / 2 - 0.02, g); },
-    tub: function (g, w, d) { box(w, 0.56, d, M.white, 0, 0, 0, g); box(w - 0.12, 0.02, d - 0.12, M.water, 0, 0.5, 0, g); cyl(0.02, 0.02, 0.3, M.brass, -w / 2 + 0.1, 0.56, -d / 2 + 0.1, g); },
+    bench: function (g, w, d) {
+      rb(w, 0.05, d, 0.015, M.oak, 0, 0.42, 0, g);
+      rb(w - 0.06, 0.06, d - 0.06, 0.025, M.boucle, 0, 0.47, 0, g);
+      [[-1], [1]].forEach(function (s) { box(0.03, 0.42, d - 0.06, M.black, s[0] * (w / 2 - 0.05), 0, 0, g); });
+      box(w - 0.1, 0.02, d - 0.1, M.oak, 0, 0.12, 0, g);
+      for (var i = 0; i < 3; i++) rb(0.1, 0.1, 0.24, 0.03, i % 2 ? M.terra : M.fabric, -w / 2 + 0.15 + i * 0.16, 0.14, 0, g);
+      box(0.6, 0.02, 0.06, M.brass, 0, 1.75, -d / 2 + 0.03, g);                        // крючки
+    },
+    shoe: function (g, w, d) {
+      rb(w, 0.82, d, 0.01, M.walnut, 0, 0.12, 0, g); legs(g, w, d, 0.12, 0.05, M.black, 0.02);
+      for (var i = 1; i < 3; i++) box(0.005, 0.78, 0.004, M.black, -w / 2 + i * w / 3, 0.14, d / 2 + 0.001, g);
+      cyl(0.06, 0.05, 0.2, M.pot, w / 2 - 0.15, 0.94, 0, g);
+    },
+    mirror: function (g, w, d) {
+      rb(w, 1.85, 0.03, 0.012, M.brass, 0, 0.12, -d / 2 + 0.02, g);
+      box(w - 0.04, 1.81, 0.004, M.mirror, 0, 0.14, -d / 2 + 0.037, g);
+    },
+    tub: function (g, w, d) {                                                           // встроенная ванна с мраморным экраном
+      box(w, 0.56, d, M.marbleW, 0, 0, 0, g);
+      rb(w - 0.14, 0.04, d - 0.14, 0.12, M.ceramic, 0, 0.53, 0, g);
+      box(w - 0.2, 0.02, d - 0.2, M.water, 0, 0.5, 0, g);
+      cyl(0.015, 0.015, 0.22, M.black, -w / 2 + 0.12, 0.56, -d / 2 + 0.06, g);
+      box(0.2, 0.015, 0.015, M.black, -w / 2 + 0.12, 0.78, -d / 2 + 0.06, g);
+    },
     shower: function (g, w, d) {
-      box(w, 0.05, d, M.white, 0, 0, 0, g);
-      var gl = box(0.01, 2.0, d, M.glass, w / 2, 0.05, 0, g); var gl2 = box(w, 2.0, 0.01, M.glass, 0, 0.05, d / 2, g);
-      cyl(0.12, 0.12, 0.02, M.brass, 0, 2.1, -d / 2 + 0.25, g);
+      box(w, 0.04, d, M.ceramic, 0, 0, 0, g);
+      box(0.01, 2.0, d, M.doorglass, w / 2 - 0.005, 0.04, 0, g); box(0.02, 2.0, 0.02, M.profile, w / 2 - 0.01, 0.04, d / 2 - 0.01, g);
+      cyl(0.13, 0.13, 0.01, M.black, 0, 2.15, -d / 2 + 0.25, g);
     },
-    toilet: function (g, w, d) { box(w, 0.4, d * 0.65, M.white, 0, 0, d * 0.12, g); box(w + 0.02, 0.05, d * 0.7, M.white, 0, 0.4, d * 0.12, g); box(w + 0.05, 0.38, 0.16, M.white, 0, 0.35, -d / 2 + 0.08, g); },
-    vanity: function (g, w, d) {
-      box(w, 0.45, d, M.oak, 0, 0.42, 0, g); box(w + 0.02, 0.06, d + 0.02, M.stone, 0, 0.87, 0, g);
-      cyl(0.02, 0.02, 0.22, M.brass, 0, 0.93, -d / 2 + 0.06, g);
-      var mr = new T.Mesh(new T.CircleGeometry(0.33, 48), M.mirror);
-      mr.position.set(0, 1.55, -d / 2 + 0.01); g.add(mr);
+    toilet: function (g, w, d) {                                                        // подвесной
+      box(0.5, 1.15, 0.05, M.marbleW, 0, 0, -d / 2 + 0.025, g);
+      rb(0.37, 0.36, d - 0.1, 0.12, M.ceramic, 0, 0.28, 0.05, g);
+      rb(0.38, 0.03, d - 0.12, 0.1, M.ceramic, 0, 0.64, 0.05, g);
+      box(0.22, 0.14, 0.012, M.black, 0, 0.95, -d / 2 + 0.056, g);
     },
-    washer: function (g, w, d) { box(w, 0.85, d, M.white, 0, 0, 0, g); var c = new T.Mesh(new T.CircleGeometry(0.2, 32), M.black); c.position.set(0, 0.45, d / 2 + 0.002); g.add(c); },
-    tablet: function (g, w) { cyl(w / 2, w / 2, 0.03, M.trav, 0, 0.6, 0, g); cyl(0.03, 0.12, 0.6, M.brass, 0, 0, 0, g); },
-    lchair: function (g, w, d) { cyl(w / 2, w / 2.4, 0.42, M.oak, 0, 0, 0, g); box(w * 0.9, 0.35, 0.06, M.oak, 0, 0.42, -d / 2 + 0.05, g); cyl(w / 2 - 0.03, w / 2 - 0.03, 0.06, M.boucle, 0, 0.42, 0, g); }
+    vanity: function (g, w, d) {                                                        // подвесная тумба, раковина, круглое зеркало с подсветкой
+      rb(w, 0.45, d, 0.012, M.walnut, 0, 0.42, 0, g);
+      box(w, 0.004, 0.004, M.black, 0, 0.64, d / 2, g);
+      box(w + 0.02, 0.03, d + 0.02, M.marbleT, 0, 0.87, 0, g);
+      slab(0.42, 0.32, 0.1, 0.15, M.ceramic, 0, 0.9, 0.02, g);
+      cyl(0.012, 0.012, 0.22, M.black, 0, 0.9, -d / 2 + 0.06, g);
+      var ring = add(g, cylG(0.36, 0.36, 0.02, 48), M.glow, 0, 1.6, -d / 2 + 0.012); ring.rotation.x = Math.PI / 2;
+      var mr = add(g, cylG(0.34, 0.34, 0.012, 48), M.mirror, 0, 1.6, -d / 2 + 0.03); mr.rotation.x = Math.PI / 2;
+    },
+    washer: function (g, w, d) { rb(w, 0.85, d, 0.02, M.ceramic, 0, 0, 0, g); var c = add(g, cylG(0.19, 0.19, 0.02, 40), M.screen, 0, 0.45, d / 2); c.rotation.x = Math.PI / 2; },
+    wcsink: function (g, w, d) {
+      slab(w, d, 0.12, 0.1, M.ceramic, 0, 0.78, 0, g);
+      cyl(0.01, 0.01, 0.16, M.black, 0, 0.9, -d / 2 + 0.05, g);
+      var mr = add(g, cylG(0.22, 0.22, 0.012, 40), M.mirror, 0, 1.45, -d / 2 + 0.006); mr.rotation.x = Math.PI / 2;
+    },
+    lounge: function (g, w, d) {                                                        // лоджия: два кресла и столик
+      [-1, 1].forEach(function (s) {
+        var x = s * (w / 2 - 0.27);
+        rb(0.52, 0.06, d - 0.04, 0.02, M.oak, x, 0.3, 0, g);
+        [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(function (p) { box(0.03, 0.3, 0.03, M.oak, x + p[0] * 0.22, 0, p[1] * (d / 2 - 0.06), g); });
+        rb(0.5, 0.1, d - 0.08, 0.04, M.linenW, x, 0.36, 0.02, g);
+        var b = rb(0.5, 0.42, 0.08, 0.04, M.linenW, x, 0.42, -d / 2 + 0.06, g); b.rotation.x = -0.18;
+      });
+      cyl(0.17, 0.17, 0.03, M.oak, 0, 0.42, 0, g, 28); cyl(0.02, 0.02, 0.42, M.black, 0, 0, 0, g);
+      cyl(0.04, 0.035, 0.1, M.pot, 0.05, 0.45, 0, g);
+    },
+    rack: function (g, w, d) {
+      for (var i = 0; i < 5; i++) box(w, 0.02, d, M.oak, 0, 0.1 + i * 0.5, 0, g);
+      [[-1], [1]].forEach(function (s) { box(0.02, 2.2, d, M.black, s[0] * (w / 2 - 0.01), 0, 0, g); });
+      cyl(0.012, 0.012, w - 0.06, M.black, 0, 1.75, 0, g).rotation.z = Math.PI / 2;
+      for (var k = 0; k < Math.floor(w / 0.12); k++) rb(0.04, 0.8, 0.4, 0.02, M.book[k % 6], -w / 2 + 0.1 + k * 0.11, 0.92, 0, g);
+    },
+    // отделка (не мебель: остаётся при выключенной мебели)
+    accent: function (g, w, d, ex, room) { box(w, H - 0.01, 0.008, (M.accent[room] || M.accent.bedroom), 0, 0, -0.025 + 0.008, g); },
+    headpanel: function (g, w, d, ex) {
+      var n = Math.max(3, Math.round(w / 0.42)), pw = w / n;
+      for (var i = 0; i < n; i++) rb(pw - 0.012, ex && ex.hgt || 1.25, 0.05, 0.02, M.fabric, -w / 2 + (i + 0.5) * pw, 0.1, -0.025 + 0.035, g);
+    },
+    slats: function (g, w, d) {
+      box(w, H - 0.01, 0.012, M.walnut, 0, 0, -0.025 + 0.012, g);
+      var n = Math.floor(w / 0.055);
+      for (var i = 0; i < n; i++) box(0.03, H - 0.01, 0.022, M.walnut, -w / 2 + 0.03 + i * (w - 0.06) / (n - 1), 0, -0.025 + 0.03, g);
+      box(w - 0.1, 0.01, 0.02, M.glow, 0, H - 0.08, -0.025 + 0.05, g);
+    },
+    pendant: function (g, w, d) {
+      var n = w > 1.0 ? 2 : 1;
+      for (var i = 0; i < n; i++) {
+        var x = n === 1 ? 0 : (i ? 1 : -1) * w * 0.22;
+        cyl(0.004, 0.004, H - 1.62, M.black, x, 1.62, 0, g, 6);
+        cyl(0.04, 0.2, 0.18, M.black, x, 1.46, 0, g, 32);
+        cyl(0.19, 0.19, 0.005, M.glow, x, 1.455, 0, g, 32);
+      }
+    }
   };
-  var NOCOLLIDE = { rug: 1, rugr: 1, curtain: 1 };
+  var NOCOLLIDE = { rug: 1, rugr: 1, curtain: 1, accent: 1, headpanel: 1, slats: 1, pendant: 1, mirror: 1 };
+  var FIXED = { accent: 1, slats: 1, pendant: 1, tub: 1, shower: 1, toilet: 1, vanity: 1, wcsink: 1, mirror: 1 };
   var ROT = [0, -Math.PI / 2, Math.PI, Math.PI / 2];
 
   /* ───────── сборка квартиры ───────── */
@@ -277,8 +491,8 @@
     }
     W.walls.forEach(function (r) { if (inBox(r, b, 0.3)) fill(r[0], r[1], r[2], r[3], 1); });
     W.win.forEach(function (r) { if (inBox(r, b, 0.3)) fill(r[0], r[1], r[2], r[3], 0.8); });
-    if (withFurn) A.furn.forEach(function (f) {
-      if (NOCOLLIDE[f[0]]) return;
+    A.furn.forEach(function (f) {
+      if (NOCOLLIDE[f[0]] || (!withFurn && !FIXED[f[0]])) return;
       var hw = (f[5] % 2 ? f[4] : f[3]) / 2 - 0.03, hd = (f[5] % 2 ? f[3] : f[4]) / 2 - 0.03;
       var v = { chair: 0.35, table: 0.3, desk: 0.35, coffee: 0.5, plant: 0.6, tablet: 0.3, lchair: 0.6 }[f[0]] || 0.85;
       fill(f[1] - hw, f[2] - hd, f[1] + hw, f[2] + hd, v);
@@ -295,12 +509,12 @@
     return t;
   }
 
-  var PAINT = { living: 0xe7dfd1, kitliv: 0xe9e2d5, bedroom: 0xe2dbd0, kids: 0xe4e1d4, studio: 0xe8e1d4, kitchen: 0xece6dc, hall: 0xe3dbcd, closet: 0xe3dbcd, loggia: 0xeae6dc };
+  var PAINT = { living: 0xece7df, kitliv: 0xece7df, bedroom: 0xe9e3da, kids: 0xede8e0, studio: 0xece7df, kitchen: 0xefebe5, hall: 0xe6e0d6, closet: 0xe6e0d6, loggia: 0xece8e0 };
   var paintMats = {};
   function paint(k) {
     if (k === 'bath') return M.tilewall;
     var c = PAINT[k] || 0xe8e2d6;
-    if (!paintMats[c]) { paintMats[c] = new T.MeshStandardMaterial({ color: c, roughness: 0.92, aoMap: M.wallAO, aoMapIntensity: 1, envMapIntensity: 0.55 }); }
+    if (!paintMats[c]) { paintMats[c] = new T.MeshStandardMaterial({ color: c, roughness: 0.92, aoMap: M.wallAO, aoMapIntensity: 1, envMapIntensity: 0.8 }); }
     return paintMats[c];
   }
 
@@ -308,12 +522,43 @@
     if (!world) return;
     scene.remove(world);
     world.traverse(function (o) {
-      if (o.geometry && o.geometry !== BOX && o.geometry !== LEAF && o.geometry !== LAMP && o.geometry !== SKYGEO && o.geometry !== GROUNDGEO) o.geometry.dispose();
+      if (o.geometry && !o.geometry.userData.keep && o.geometry !== BOX && o.geometry !== LEAF && o.geometry !== LAMP && o.geometry !== SKYGEO && o.geometry !== GROUNDGEO) o.geometry.dispose();
       if (o.isInstancedMesh) o.dispose();
       if (o.material && o.material.userData && o.material.userData.own) o.material.dispose();
     });
     if (aoT) { aoT[0].dispose(); aoT[1].dispose(); aoT = null; }
+    mirRT.forEach(function (rt) { rt.dispose(); }); mirRT = [];
     world = null;
+  }
+  // зеркала: один раз снимаем кубическую панораму комнаты от зеркала — в нём видно реальный интерьер
+  var mirRT = [];
+  function mirrors() {
+    if (!world || !renderer || !T.CubeCamera) return;
+    var list = []; world.traverse(function (o) { if (o.isMesh && o.material === M.mirror) list.push(o); });
+    if (!list.length) return;
+    var groups = new Map(), v = new T.Vector3(), d = new T.Vector3();
+    list.forEach(function (o) {
+      var g = o; while (g && !(g.userData && g.userData.item)) g = g.parent;
+      if (!g) return;
+      o.getWorldPosition(v); g.getWorldDirection(d);
+      var rm = roomAtL(v.x * mir, v.z) || roomAtL(v.x * mir + d.x * mir * 0.3, v.z + d.z * 0.3);
+      var q = groups.get(rm); if (!q) groups.set(rm, q = { m: [], p: new T.Vector3(), d: new T.Vector3() });
+      q.m.push(o); q.p.add(v); q.d.add(d);
+    });
+    var hide = list.map(function (o) { var w = o.visible; o.visible = false; return w; });
+    groups.forEach(function (q) {
+      q.p.divideScalar(q.m.length); q.d.y = 0; q.d.normalize();
+      var off = 0.9; while (off > 0.3 && !freeL((q.p.x + q.d.x * off) * mir, q.p.z + q.d.z * off, false)) off -= 0.1;
+      var rt = new T.WebGLCubeRenderTarget(phone() ? 128 : 256, { type: T.HalfFloatType });
+      var cc = new T.CubeCamera(0.05, 60, rt);
+      cc.position.set(q.p.x + q.d.x * off, 1.5, q.p.z + q.d.z * off); cc.updateMatrixWorld(true);
+      cc.update(renderer, scene);
+      mirRT.push(rt);
+      var mt = new T.MeshBasicMaterial({ color: 0xe9eded, envMap: rt.texture }); mt.userData.own = true;
+      q.m.forEach(function (o) { o.material = mt; });
+    });
+    list.forEach(function (o, i) { o.visible = hide[i]; });
+    kick();
   }
 
   var aoT = null, solids = [];
@@ -333,11 +578,11 @@
     items = []; floors = []; solids = [];
     var b = A.box, bw = b[2] - b[0], bh = b[3] - b[1];
     aoT = [aoTex(false), aoTex(true)];
-    [M.parquet, M.tile, M.tileg].forEach(function (m) { m.aoMap = aoT[furnOn ? 1 : 0]; m.aoMapIntensity = 1; m.needsUpdate = true; });
+    [M.parquet, M.tile, M.tileb, M.tileg].forEach(function (m) { m.aoMap = aoT[furnOn ? 1 : 0]; m.aoMapIntensity = 1; m.needsUpdate = true; });
     // полы и потолки — без щелей (полигон комнаты продлён под стены и в проёмы)
     var cq = [];
     A.rooms.forEach(function (rm, ri) {
-      var m = { bath: M.tile, loggia: M.tileg, hall: M.tile, kitchen: M.tile }[rm.k] || M.parquet;
+      var m = { bath: M.tileb, loggia: M.tileg, hall: M.tile, kitchen: M.tile, closet: M.tile }[rm.k] || M.parquet;
       (rm.fp || rm.poly).forEach(function (p) {
         var g = new T.ShapeGeometry(shapeOf(p));
         g.rotateX(-Math.PI / 2);
@@ -401,26 +646,30 @@
       if (L < 0.5 || L > 1.6) return;
       var B = function (along, y, len, hgt, dep) { return t ? [cx, y, along, dep, hgt, len] : [along, y, cz, len, hgt, dep]; };
       var s0 = t ? r[1] : r[0];
-      jam.push(B(s0, 0, 0.08, 2.1, D + 0.03), B(s0 + L, 0, 0.08, 2.1, D + 0.03), B(s0 + L / 2, 2.06, L + 0.08, 0.08, D + 0.03));
+      jam.push(B(s0, 0, 0.05, 2.1, D + 0.02), B(s0 + L, 0, 0.05, 2.1, D + 0.02), B(s0 + L / 2, 2.075, L + 0.05, 0.05, D + 0.02));
       if (ents.indexOf(r) >= 0 || !inBox(r, b, 0)) return;
       if (wins.some(function (w) { return inBox(w, r, 0.3); })) return;      // выход на лоджию — без полотна
-      // полотно открыто на 90°: выбираем петлю и сторону, где не мешает стене и мебели
-      var Lw = L - 0.04, done = false;
-      [[0, 1], [1, 1], [0, -1], [1, -1]].some(function (c) {
-        var hz = c[0] ? s0 + L - 0.035 : s0 + 0.035, sd = c[1], fc = t ? (sd > 0 ? r[2] : r[0]) : (sd > 0 ? r[3] : r[1]);
-        for (var d = 0.06; d <= Lw; d += 0.08) {
-          var px = t ? fc + sd * d : hz, pz = t ? hz : fc + sd * d;
-          var qx = t ? px : hz + (c[0] ? -0.12 : 0.12), qz = t ? hz + (c[0] ? -0.12 : 0.12) : pz;
-          if (!freeL(px, pz, true) || !freeL(t ? px : px, t ? pz : pz, true)) return false;
+      // раздвижное стеклянное полотно: «откатано» вдоль стены рядом с проёмом, проходу не мешает
+      var Lw = L + 0.06;
+      [[1, 1], [1, -1], [-1, 1], [-1, -1]].some(function (c) {
+        var sd = c[0], dir = c[1];                                     // sd — сторона стены (грань), dir — куда откатить
+        var face = t ? (sd > 0 ? r[2] : r[0]) : (sd > 0 ? r[3] : r[1]);
+        var a0 = dir > 0 ? s0 + L : s0 - Lw, a1 = a0 + Lw;           // отрезок вдоль стены, занятый полотном
+        for (var q = a0 + 0.05; q < a1; q += 0.1) {
+          var ox = t ? face + sd * 0.07 : q, oz = t ? q : face + sd * 0.07;      // перед стеной — свободно (без мебели)
+          var ix = t ? face - sd * 0.06 : q, iz = t ? q : face - sd * 0.06;      // за полотном — стена
+          if (!freeL(ox, oz, true) || freeL(ix, iz, false)) return false;
         }
-        var m0 = fc + sd * Lw / 2;
-        var e0 = fc + sd * 0.025, e1 = fc + sd * (Lw - 0.025);
-        if (t) { leaf.push([m0, 0.06, hz, Lw - 0.1, 1.91, 0.012]); frame.push([e0, 0.004, hz, 0.05, 2.03, 0.04], [e1, 0.004, hz, 0.05, 2.03, 0.04], [m0, 0.004, hz, Lw, 0.06, 0.04], [m0, 1.974, hz, Lw, 0.06, 0.04]); handles.push([fc + sd * (Lw - 0.07), 0.98, hz, 0.025, 0.025, 0.16]); }
-        else { leaf.push([hz, 0.06, m0, 0.012, 1.91, Lw - 0.1]); frame.push([hz, 0.004, e0, 0.04, 2.03, 0.05], [hz, 0.004, e1, 0.04, 2.03, 0.05], [hz, 0.004, m0, 0.04, 0.06, Lw], [hz, 1.974, m0, 0.04, 0.06, Lw]); handles.push([hz, 0.98, fc + sd * (Lw - 0.07), 0.16, 0.025, 0.025]); }
-        done = true; return true;
+        var off = face + sd * 0.035, mid = (a0 + a1) / 2;
+        var P = function (along, y, len, hgt, dep) { return t ? [off, y, along, dep, hgt, len] : [along, y, off, len, hgt, dep]; };
+        leaf.push(P(mid, 0.03, Lw - 0.04, 2.06, 0.01));
+        frame.push(P(a0 + 0.012, 0.01, 0.024, 2.1, 0.03), P(a1 - 0.012, 0.01, 0.024, 2.1, 0.03), P(mid, 0.01, Lw, 0.024, 0.03), P(mid, 2.09, Lw, 0.024, 0.03));
+        frame.push(P(mid, 2.12, Lw * 2 + 0.06, 0.04, 0.05));             // направляющая
+        handles.push(P(dir > 0 ? a0 + 0.06 : a1 - 0.06, 0.75, 0.02, 0.55, 0.045));
+        return true;
       });
     });
-    boxes(jam, M.trim); var dg = boxes(leaf, M.doorglass); if (dg) dg.castShadow = false; boxes(frame, M.trim); boxes(handles, M.brass);
+    boxes(jam, M.profile); var dg = boxes(leaf, M.doorglass); if (dg) dg.castShadow = false; boxes(frame, M.profile); boxes(handles, M.profile);
     instanced(ents, M.door, function (r, o) { var t = (r[2] - r[0]) < (r[3] - r[1]); o.scale.set(t ? 0.06 : r[2] - r[0], 2.06, t ? r[3] - r[1] : 0.06); o.position.set((r[0] + r[2]) / 2, 1.03, (r[1] + r[3]) / 2); });
     instanced(doors.concat(ents), M.wall, function (r, o) { o.scale.set(r[2] - r[0], H - 2.1, r[3] - r[1]); o.position.set((r[0] + r[2]) / 2, 2.1 + (H - 2.1) / 2, (r[1] + r[3]) / 2); });
     // мебель
@@ -432,14 +681,24 @@
       g.scale.setScalar(g.userData.s); g.visible = furnOn;
       furnGroup.add(g); items.push(g);
     };
+    var fixedGroup = new T.Group(); world.add(fixedGroup);
     A.furn.forEach(function (f, fi) {
       var mk = F[f[0]]; if (!mk) return;
       var g = new T.Group(), inner = new T.Group();
-      mk(inner, f[3], f[4]);
+      var hw = (f[5] % 2 ? f[4] : f[3]) / 2, hd = (f[5] % 2 ? f[3] : f[4]) / 2;
+      var di = [[0, -1], [1, 0], [0, 1], [-1, 0]][f[5]];                       // направление «назад»
+      var rm = roomAtL(f[1] - di[0] * 0.3, f[2] - di[1] * 0.3) || roomAtL(f[1], f[2]);
+      mk(inner, f[3], f[4], f[6] || {}, rm ? rm.k : '');
       g.add(inner);
       g.position.set(f[1], 0, f[2]);
       g.rotation.y = ROT[f[5]];
-      addItem(f[0], f[1], f[2], (f[5] % 2 ? f[4] : f[3]) / 2, (f[5] % 2 ? f[3] : f[4]) / 2, g);
+      if (FIXED[f[0]]) {                                                            // сантехника и отделка — всегда на месте
+        g.traverse(function (o) { if (o.isMesh) { o.castShadow = !NOCOLLIDE[f[0]] || f[0] === 'slats'; o.receiveShadow = true; } });
+        g.userData.item = f[0]; fixedGroup.add(g);
+        if (!NOCOLLIDE[f[0]]) solids.push([f[1] - hw, f[2] - hd, f[1] + hw, f[2] + hd]);
+        return;
+      }
+      addItem(f[0], f[1], f[2], hw, hd, g);
       if (ghost[fi]) g.userData.ghost = true;
     });
     // шторы на окнах жилых комнат
@@ -460,7 +719,18 @@
     });
     // светильники: плоские тарелки на потолке (свет — от окна и окружения)
     var lamps = [];
-    A.rooms.forEach(function (rm) { if (rm.k !== 'loggia' && rm.a >= 2) lamps.push(rm.c); });
+    A.rooms.forEach(function (rm) {
+      if (rm.a < 1.5) return;
+      var bx = [1e9, 1e9, -1e9, -1e9];
+      rm.poly.forEach(function (p) { p.forEach(function (q) { bx[0] = Math.min(bx[0], q[0]); bx[1] = Math.min(bx[1], q[1]); bx[2] = Math.max(bx[2], q[0]); bx[3] = Math.max(bx[3], q[1]); }); });
+      var step = rm.k === 'bath' || rm.k === 'hall' ? 0.9 : 1.25, n = 0;
+      var nx = Math.max(1, Math.round((bx[2] - bx[0] - 0.6) / step)), nz = Math.max(1, Math.round((bx[3] - bx[1] - 0.6) / step));
+      for (var ix = 0; ix < nx; ix++) for (var iz = 0; iz < nz; iz++) {
+        var x = bx[0] + (bx[2] - bx[0]) * (ix + 0.5) / nx, z = bx[1] + (bx[3] - bx[1]) * (iz + 0.5) / nz;
+        if (roomAtL(x, z) === rm && roomAtL(x + 0.3, z) === rm && roomAtL(x - 0.3, z) === rm && roomAtL(x, z + 0.3) === rm && roomAtL(x, z - 0.3) === rm) { lamps.push([x, z]); n++; }
+      }
+      if (!n) lamps.push(rm.c);
+    });
     if (lamps.length) {
       var lm = new T.InstancedMesh(LAMP, M.lamp, lamps.length), o = new T.Object3D();
       lamps.forEach(function (c, i) { o.position.set(c[0], H - 0.02, c[1]); o.updateMatrix(); lm.setMatrixAt(i, o.matrix); });
@@ -528,7 +798,7 @@
         }
       }
       if (found < 0) break;
-      for (var p = found; p >= 0 && !reach[p]; p = prev[p]) if (!okm[p]) doorZ.push([cx(p % w) - 0.26, cz((p / w) | 0) - 0.26, cx(p % w) + 0.26, cz((p / w) | 0) + 0.26]);
+      for (var p = found; p >= 0 && !reach[p]; p = prev[p]) if (!okm[p]) (window.__wkCarved = (window.__wkCarved || 0) + 1), doorZ.push([cx(p % w) - 0.26, cz((p / w) | 0) - 0.26, cx(p % w) + 0.26, cz((p / w) | 0) + 0.26]);
     }
     furnOn = fo;
   }
@@ -566,14 +836,14 @@
         A.furn.forEach(function (f, fi) {
           if (NOCOLLIDE[f[0]] || ghost[fi]) return;
           var hw = (f[5] % 2 ? f[4] : f[3]) / 2 + R + 0.02, hd = (f[5] % 2 ? f[3] : f[4]) / 2 + R + 0.02;
-          if (Math.abs(px - f[1]) < hw && Math.abs(pz - f[2]) < hd) { ghost[fi] = 1; hit = true; }
+          if (Math.abs(px - f[1]) < hw && Math.abs(pz - f[2]) < hd) { ghost[fi] = 1; hit = true; window.__wkGhost = (window.__wkGhost || 0) + 1; (window.__wkGL = window.__wkGL || []).push([info.st, info.n, f[0], (roomAtL(f[1], f[2]) || {}).k, Object.keys(want).map(function (i) { return A.rooms[i].k; }).join('+')]); }
         });
       }
       if (!hit) break;
     }
     furnOn = fo;
   }
-  function setAO() { if (aoT) [M.parquet, M.tile, M.tileg].forEach(function (m) { m.aoMap = aoT[furnOn ? 1 : 0]; }); }
+  function setAO() { if (aoT) [M.parquet, M.tile, M.tileb, M.tileg].forEach(function (m) { m.aoMap = aoT[furnOn ? 1 : 0]; }); }
 
   /* ───────── столкновения ───────── */
   function free(x, z) { return freeL(x * mir, z, furnOn); }
@@ -832,7 +1102,7 @@
     clock = new T.Clock();
     BOX = new T.BoxGeometry(1, 1, 1);
     LEAF = new T.SphereGeometry(1, 10, 8);
-    LAMP = new T.CylinderGeometry(0.24, 0.24, 0.035, 40);
+    LAMP = new T.CylinderGeometry(0.045, 0.045, 0.012, 20);
     SKYGEO = new T.CylinderGeometry(90, 90, 120, 64, 1, true);
     GROUNDGEO = new T.CircleGeometry(90, 48); GROUNDGEO.rotateX(-Math.PI / 2);
     mats();
@@ -905,6 +1175,7 @@
                 clearTimeout(helpT); helpT = setTimeout(hideHelp, 9000);
                 kick();
                 setTimeout(function () { if (my === token) setFurniture(true); }, 380);
+                setTimeout(function () { if (my === token) mirrors(); }, 2100);
               }, 260);
             });
           };
@@ -935,9 +1206,9 @@
     }
     return false;
   }
-  function bestView() {
+  function bestView(only) {
     var pref = A.rooms.filter(function (r) { return /living|kitliv|studio/.test(r.k); });
-    var rm = (pref.length ? pref : A.rooms.filter(function (r) { return r.k !== 'loggia' && r.k !== 'bath'; })).sort(function (a, b) { return b.a - a.a; })[0];
+    var rm = only || (pref.length ? pref : A.rooms.filter(function (r) { return r.k !== 'loggia' && r.k !== 'bath'; })).sort(function (a, b) { return b.a - a.a; })[0];
     if (!rm) return;
     var bx = [1e9, 1e9, -1e9, -1e9];
     rm.poly.forEach(function (p) { p.forEach(function (q) { bx[0] = Math.min(bx[0], q[0]); bx[1] = Math.min(bx[1], q[1]); bx[2] = Math.max(bx[2], q[0]); bx[3] = Math.max(bx[3], q[1]); }); });
@@ -966,11 +1237,18 @@
       var sc = d + 0.4 * Math.min(ray(x, z, y + 0.5), ray(x, z, y - 0.5), 4) + 4 * cl;
       if (!best || sc > best.s) best = { s: sc, x: x, z: z, y: y };
     }
+    if (!best && only) {                                     // маленькая комната: встаём в самое свободное место, смотрим вдаль
+      for (var x2 = bx[0] + 0.2; x2 < bx[2]; x2 += 0.1) for (var z2 = bx[1] + 0.2; z2 < bx[3]; z2 += 0.1) {
+        if (roomAtL(x2, z2) !== rm || !ok(x2 * mir, z2)) continue;
+        for (var a2 = 0; a2 < 16; a2++) { var y2 = a2 / 16 * Math.PI * 2, d2 = ray(x2, z2, y2); if (!best || d2 > best.s) best = { s: d2, x: x2, z: z2, y: y2 }; }
+      }
+    }
     if (!best) return;
     pos.x = best.x * mir; pos.z = best.z;
     yaw = mir < 0 ? -best.y : best.y;
   }
   window.ALTA_openWalk = open;
+  window.__wkView = function (k) { var rm = A.rooms[k]; if (!rm) return false; bestView(rm); pitch = -0.08; hideHelp(); kick(); return rm.k; };
   window.__wkReach = function (withFurn) {             // проверка: из точки входа достижимы ли все комнаты
     var fo = furnOn; furnOn = withFurn; var b = A.box, st = 0.1, w = Math.ceil((b[2] - b[0]) / st), h = Math.ceil((b[3] - b[1]) / st);
     var seen = new Uint8Array(w * h), q = [], got = {};
@@ -985,9 +1263,15 @@
     return all.filter(function (k) { return !got[k]; });
   };
   window.__wkRun = function () { return JSON.stringify({ running: running, frames: window.__fr, keys: keys, look: !!look, joy: joy }); };
+  window.__wkMap = function (withFurn) {               // отладка: карта проходимости (ok) — строки
+    var fo = furnOn; furnOn = withFurn; var b = A.box, st = 0.1, w = Math.ceil((b[2] - b[0]) / st), h = Math.ceil((b[3] - b[1]) / st), out = [];
+    for (var i = 0; i < h; i++) { var row = ''; for (var j = 0; j < w; j++) { var x = b[0] + (j + 0.5) * st, z = b[1] + (i + 0.5) * st; row += ok(x * mir, z) ? '.' : freeL(x, z, false) ? (freeL(x, z, withFurn) ? ',' : 'F') : '#'; } out.push(row); }
+    furnOn = fo; return { map: out, box: b, items: items.map(function (it) { var u = it.userData; return [u.kind, +u.x0.toFixed(2), +u.z0.toFixed(2), +u.x1.toFixed(2), +u.z1.toFixed(2), !!u.ghost]; }) };
+  };
   window.__wkDbg = function () { return { pos: [pos.x, pos.z], yaw: yaw, okHere: ok(pos.x, pos.z), fwd: [0.1, 0.3, 0.5].map(function (d) { return ok(pos.x - Math.sin(yaw) * d, pos.z - Math.cos(yaw) * d); }), freeHere: free(pos.x, pos.z) }; };
   window.__wkInfo = function () { return renderer && { geo: renderer.info.memory.geometries, tex: renderer.info.memory.textures, prog: renderer.info.programs.length, calls: renderer.info.render.calls, tris: renderer.info.render.triangles }; };
   // для проверки: встать в точку (локальные координаты) и посмотреть в самую дальнюю сторону
+  window.__wkLook = function (lx, lz, yw, pt) { pos.x = lx * mir; pos.z = lz; yaw = yw; pitch = pt || -0.05; hideHelp(); kick(); };
   window.__wkTeleport = function (lx, lz) {
     pos.x = lx * mir; pos.z = lz;
     var best = 0, by = 0;
