@@ -467,7 +467,7 @@
     var y = id === 'top' ? 0 : v.getBoundingClientRect().top + window.scrollY - 64;
     window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
   }
-  var NOPIC = { top: 1, genplan: 1, kvartiry: 1 };
+  var NOPIC = { top: 1, plus: 1, genplan: 1, kvartiry: 1 };
   function mobileStart(startId) {
     body.classList.add('is-m');
     SC.forEach(function (s) {

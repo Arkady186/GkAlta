@@ -11,6 +11,7 @@ window.ALTA = {
      Если файла нет, сайт сам сделает быстрый «пролёт» по фото. */
   scenes: [
     { id: 'top',        name: 'Главная',      img: 'assets/img/aerial.jpg',   loop: 'assets/video/hero-loop.mp4' },
+    { id: 'plus',       name: 'Ипотека 2%',   img: 'assets/img/aerial.jpg' },
     { id: 'kvartal',    name: 'Квартал',      img: 'assets/img/street.jpg',   via: 'aerial-to-street',    rate: 1,   back: true },
     { id: 'genplan',    name: 'Генплан',      img: 'assets/img/facade.jpg',   via: 'street-to-facade',    rate: 1,   back: true },
     { id: 'dvor',       name: 'Дворы',        img: 'assets/img/dvor.jpg',     via: 'facade-to-dvor',      rate: 1,   back: true },
@@ -45,7 +46,7 @@ window.ALTA = {
 
   /* Контакты для кнопок «Позвонить» и «Написать» (нижняя панель на телефоне, карточка квартиры).
      Пустые поля не показываются. Пример: phone: '+7 959 000-00-00', telegram: 'gk_alta', whatsapp: '79590000000' */
-  contacts: { email: 'gk.alta.2026@mail.ru', phone: null, telegram: null, whatsapp: null },
+  contacts: { email: 'gk.alta.2026@mail.ru', phone: '+7 959 111-11-20', telegram: null, whatsapp: null },
 
   /* Цены для каталога квартир. Пока null — в карточках «Цена по запросу».
      Чтобы показать цены, заполните, например:

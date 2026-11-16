@@ -994,3 +994,77 @@ html.m .kom-table .num{padding-right:0}
 }
 html.m body.docs-open .tabbar{transform:translateY(105%)}
 @media (min-width:861px){.nav-docs{display:none}}
+
+/* ───────── ЖК Первый: логотип, телефон, ипотека 2%, преимущества ───────── */
+.brand img{width:auto;height:40px;display:block}
+.pk-logo{width:auto;height:28px}
+.nav a.nav-2{color:var(--brass-hi);opacity:1}
+.bar-tel{gap:9px;font-variant-numeric:lining-nums}
+.bar-tel svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round}
+#t-top{font-size:clamp(52px,7.6vw,132px);line-height:.92}
+
+.hero-2{position:absolute;right:calc(var(--pad) + 40px);bottom:0;display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;column-gap:18px;align-items:center;padding:16px 26px 16px 22px;border:1px solid rgba(201,169,106,.6);border-radius:10px;background:linear-gradient(135deg,rgba(201,169,106,.24),rgba(6,23,13,.55) 60%);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);text-decoration:none;transition:border-color .3s,background .3s}
+.hero-2 b{grid-column:2;grid-row:1 / span 2;font-family:var(--display);font-weight:400;font-size:clamp(70px,6.4vw,112px);line-height:.82;letter-spacing:-.02em;background:linear-gradient(180deg,#fbe9bd 10%,var(--brass) 90%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-top:.08em}
+.h2-k{font-family:var(--display);font-size:24px;line-height:1.05;color:var(--ivory)}
+.h2-s{font-size:12.5px;line-height:1.3;color:var(--brass-hi);align-self:end}
+.hero-2:hover{border-color:var(--brass-hi);background:linear-gradient(135deg,rgba(201,169,106,.36),rgba(6,23,13,.55) 60%)}
+
+.plus{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(26px,3.4vw,56px);align-items:stretch}
+.mort{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:clamp(24px,2.6vw,40px);border-radius:8px;border:1px solid rgba(201,169,106,.55);background:radial-gradient(120% 90% at 0% 0%,rgba(230,207,156,.22),rgba(201,169,106,.05) 55%,rgba(6,23,13,0) 100%);overflow:hidden}
+.mort-k{margin:0;font-family:var(--display);font-size:clamp(28px,2.4vw,40px);line-height:1}
+.mort-v{margin:6px 0 0;font-family:var(--display);font-size:clamp(150px,15vw,260px);line-height:.8;letter-spacing:-.04em;background:linear-gradient(180deg,#fff1c9 8%,#e6cf9c 40%,#b8893b 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-top:.06em}
+.mort-v span{font-size:.5em;letter-spacing:0;vertical-align:.62em;margin-left:.04em}
+.mort-t{margin:18px 0 22px;max-width:40ch;color:rgba(243,239,228,.88)}
+.mort .btn{white-space:normal;text-align:center}
+.mort-n{margin:16px 0 0;font-size:12px;line-height:1.45;color:var(--mist);max-width:46ch}
+.perks-wrap .title{margin-bottom:clamp(14px,2.4vh,26px)}
+.perks{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px}
+.perks li{display:flex;align-items:center;gap:14px;padding:clamp(9px,1.45vh,14px) 0;border-top:1px solid var(--line);font-size:16px;line-height:1.25}
+.perks svg{flex:none;width:30px;height:30px;fill:none;stroke:var(--brass-hi);stroke-width:1.3;stroke-linecap:round;stroke-linejoin:round}
+
+.mail-s{display:inline-block;margin-top:16px;font-size:17px;color:var(--mist);text-decoration:none;border-bottom:1px solid var(--line)}
+.mail-s:hover{color:var(--ivory)}
+.addr a{text-decoration:none}
+.fl-mort{display:flex;align-items:center;gap:14px;margin:18px 0 10px;padding:10px 16px;border:1px solid rgba(201,169,106,.5);border-radius:8px;background:linear-gradient(120deg,rgba(201,169,106,.16),rgba(201,169,106,.03))}
+.fl-mort b{font-family:var(--display);font-weight:400;font-size:42px;line-height:1;background:linear-gradient(180deg,#fbe9bd,var(--brass));-webkit-background-clip:text;background-clip:text;color:transparent}
+.fl-mort span{font-size:13px;line-height:1.35;color:var(--mist)}
+.fl-tel{display:inline-block;margin:0 0 6px;font-size:15px;color:var(--brass-hi);text-decoration:none;font-variant-numeric:lining-nums}
+
+@media (max-width:1520px) and (min-width:861px){
+  .nav{gap:clamp(12px,1.5vw,24px)}
+  .nav a{font-size:14px}
+  .bar-pick{display:none}
+}
+@media (max-width:1180px){
+  .plus{grid-template-columns:1fr}
+  .hero-2{position:static;display:inline-grid;margin-top:26px}
+}
+@media (max-height:760px) and (min-width:861px){
+  .mort-v{font-size:clamp(120px,11vw,190px)}
+  .perks li{padding:8px 0;font-size:15px}
+}
+@media (max-width:860px){
+  .brand img{height:30px}
+}
+html.m .brand img{width:auto;height:30px}
+html.m .hero-2{position:relative;right:auto;bottom:auto;display:grid;grid-template-columns:auto 1fr auto;margin-top:18px;padding:12px 16px;width:100%;backdrop-filter:none;-webkit-backdrop-filter:none;background:linear-gradient(120deg,rgba(201,169,106,.3),rgba(6,23,13,.75) 70%)}
+html.m .hero-2 b{grid-column:3;grid-row:1 / span 2;font-size:64px}
+html.m .h2-k{grid-column:1;font-size:22px}
+html.m .h2-s{grid-column:1;font-size:12px}
+html.m #t-top{font-size:clamp(42px,12vw,58px)}
+html.m .plus{display:flex;flex-direction:column;gap:30px}
+html.m .mort{padding:22px 18px}
+html.m .mort-v{font-size:150px}
+html.m .perks{column-gap:14px}
+html.m .perks li{flex-direction:column;align-items:flex-start;gap:8px;font-size:14.5px;padding:12px 0}
+html.m .perks svg{width:26px;height:26px}
+.nav a{white-space:nowrap}
+.mail-s{display:table}
+@media (min-width:861px){.brand img{height:44px}}
+.fl-mort{margin:14px 0 8px}
+.fl-tel{margin-bottom:14px}
+#flatBody .fl-mort{border-color:rgba(160,120,50,.45);background:linear-gradient(120deg,rgba(201,169,106,.22),rgba(201,169,106,.06))}
+#flatBody .fl-mort b{background:linear-gradient(180deg,#c89a45,#8a6420);-webkit-background-clip:text;background-clip:text}
+#flatBody .fl-mort span{color:#3f5146}
+#flatBody .fl-tel{color:var(--pine);font-weight:500;border-bottom:1px solid rgba(5,60,26,.3)}
+.brand{flex:none}

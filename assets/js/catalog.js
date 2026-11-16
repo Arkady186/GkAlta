@@ -8,6 +8,7 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var fmt = function (n, d) { return n.toLocaleString('ru-RU', { minimumFractionDigits: d == null ? 0 : d, maximumFractionDigits: d == null ? 2 : d }); };
   var MAIL = 'gk.alta.2026@mail.ru';
+  var TEL = (window.ALTA && window.ALTA.contacts && window.ALTA.contacts.phone) || '';
   var ROMAN = ['', 'I', 'II', 'III', 'IV'];
   var FLOOR_MIN = 2, FLOOR_MAX = 16;
 
@@ -364,6 +365,8 @@
         '<p class="fl-type">' + t.name + '</p>' +
         '<h2 class="fl-area" id="flatTitle">' + fmt(f.total, 2) + ' <span>м²</span></h2>' +
         (p ? '<p class="fl-price">' + fmt(p.sum) + ' ₽<span>' + fmt(p.m2) + ' ₽ за м²</span></p>' : '') +
+        '<p class="fl-mort"><b>2%</b><span>Ипотека для всех. Условия и расчёт платежа — в отделе продаж</span></p>' +
+        (TEL ? '<a class="fl-tel" href="tel:' + TEL.replace(/[^\d+]/g, '') + '">Отдел продаж: ' + TEL + '</a>' : '') +
         rowsHTML([['Этаж', f.floor + ' из 16'], ['Секция', String(f.sec)], ['Очередь', ROMAN[f.phase]], ho ? ['Срок сдачи', ho] : null,
           ['Площадь квартиры', fmt(f.flat, 2) + ' м²'], ['Жилая площадь', fmt(f.live, 2) + ' м²']]) +
         (rooms.length ? '<p class="fl-sub">Комнаты</p><ul class="fl-rooms">' + rooms.map(function (r) { return '<li><span>' + r.name + '</span><b>' + fmt(r.a, 1) + ' м²</b></li>'; }).join('') + '</ul>' : '') +
@@ -378,7 +381,7 @@
       '<button type="button" class="fl-link" data-act="share">Поделиться</button>';
     modal.classList.add('is-open'); modal.inert = false; modal.setAttribute('aria-hidden', 'false');
     if (!silent) setHash('#kv-' + f.id);
-    document.title = t.name + ' ' + fmt(f.total, 2) + ' м² — ЖК в Краснодоне';
+    document.title = t.name + ' ' + fmt(f.total, 2) + ' м² — ЖК Первый, Краснодон';
     setTimeout(function () { $('#flatClose').focus({ preventScroll: true }); }, 40);
   }
   var baseTitle = document.title;
